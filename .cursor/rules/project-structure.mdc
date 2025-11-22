@@ -1,0 +1,234 @@
+---
+description: GitOps repository structure, directory layout, and important files
+globs: **/*
+alwaysApply: true
+---
+# Project Structure and Directory Layout
+
+This GitOps repository follows a **pure Helm-centric pattern** with ArgoCD for managing a complete Kubernetes platform.
+
+## Root Directory Structure
+
+```
+k8sgitops/
+├── .cursor/                    # Cursor IDE rules and configuration
+│   └── rules/                 # Project-specific cursor rules
+├── .gitignore                 # Git ignore patterns (excludes secrets)
+├── README.md                  # Main project documentation
+├── BOOTSTRAP.md               # Step-by-step bootstrap guide
+├── ARCHITECTURE.md            # Architecture diagrams and design
+├── QUICK_REFERENCE.md         # Quick command reference
+├── clusters/                   # ArgoCD Application manifests
+├── infra/                     # Infrastructure Helm values + raw YAML
+└── apps/                      # Application Helm values
+```
+
+## Directory Details
+
+### `clusters/` - ArgoCD Application Manifests
+
+**Purpose**: Contains ArgoCD Application CRs that define what to deploy and where.
+
+```
+clusters/
+└── prod/                      # Production cluster configuration
+    ├── argocd-root.yaml       # ROOT app-of-apps (apply manually once)
+    ├── infra/                 # Infrastructure applications
+    │   ├── kong.yaml          # Kong Gateway application
+    │   ├── ceph.yaml          # Rook Ceph operator
+    │   ├── ceph-cluster.yaml  # CephCluster CRD application
+    │   ├── monitoring.yaml    # Prometheus/Grafana stack
+    │   ├── vault.yaml         # HashiCorp Vault
+    │   ├── cloudflared.yaml   # Cloudflare Tunnel
+    │   ├── external-secrets.yaml  # External Secrets Operator
+    │   ├── namespaces.yaml    # Namespace definitions
+    │   └── node-pools.yaml    # Node labels/taints
+    └── apps/                  # Business and platform applications
+        ├── business.yaml      # Business apps grouping
+        ├── platform.yaml      # Platform apps grouping
+        └── business/          # Individual business apps
+            ├── store-api.yaml
+            └── payment-service.yaml
+```
+
+**Key Files**:
+- `argocd-root.yaml`: The entry point - apply this manually to bootstrap GitOps
+- All other files: ArgoCD Application CRs that reference Helm charts or raw YAML
+
+**Conventions**:
+- One Application per file
+- File names match application names
+- Use relative paths for valueFiles (e.g., `../../../infra/kong/values.yaml`)
+
+### `infra/` - Infrastructure Configuration
+
+**Purpose**: Helm values files and raw YAML for infrastructure components.
+
+```
+infra/
+├── kong/                      # Kong Gateway
+│   ├── values.yaml           # Helm values for Kong chart
+│   └── README.md             # Kong-specific documentation
+├── ceph/                      # Rook Ceph storage
+│   ├── rook-values.yaml      # Helm values for Rook operator
+│   ├── cephcluster.yaml      # CephCluster CRD (raw YAML)
+│   └── toolbox.yaml          # Ceph toolbox deployment
+├── monitoring/               # Monitoring stack
+│   └── values.yaml           # kube-prometheus-stack values
+├── vault/                    # HashiCorp Vault
+│   └── values.yaml           # Vault Helm values
+├── cloudflared/              # Cloudflare Tunnel (no Helm chart)
+│   ├── deployment.yaml       # cloudflared Deployment
+│   ├── configmap.yaml        # Tunnel configuration
+│   └── serviceaccount.yaml   # Service account
+├── external-secrets/         # External Secrets Operator
+│   ├── values.yaml           # ESO Helm values
+│   └── secretstores.yaml     # SecretStore/ClusterSecretStore CRs
+├── namespaces/               # Namespace definitions (raw YAML)
+│   └── namespaces.yaml       # All namespace resources
+└── node-pools/               # Node labels and taints (raw YAML)
+    ├── kong-nodes.yaml       # Kong gateway node configs
+    ├── ceph-nodes.yaml       # Ceph storage node configs
+    └── worker-nodes.yaml     # General worker node configs
+```
+
+**Key Files**:
+- `*/values.yaml`: Helm values for infrastructure components
+- `ceph/cephcluster.yaml`: CephCluster CRD (cannot use Helm)
+- `cloudflared/*.yaml`: Raw YAML (no official Helm chart)
+- `namespaces/namespaces.yaml`: All namespace definitions
+- `node-pools/*.yaml`: Node label and taint configurations
+
+**Conventions**:
+- Use Helm values files whenever possible
+- Only use raw YAML for: namespaces, node labels/taints, CRDs without Helm charts
+- Each component has its own directory
+- Include README.md for complex components
+
+### `apps/` - Application Helm Values
+
+**Purpose**: Helm values files for business and platform applications.
+
+```
+apps/
+├── README.md                  # Application documentation
+└── business/                  # Business applications
+    ├── store-api/
+    │   └── values.yaml       # Store API Helm values
+    └── payment-service/
+        └── values.yaml       # Payment service Helm values
+```
+
+**Key Files**:
+- `*/values.yaml`: Helm values for each application
+- Each application gets its own directory
+
+**Conventions**:
+- One directory per application
+- Each directory contains `values.yaml`
+- Optional: Add `README.md` for application-specific docs
+- ArgoCD Applications reference these via relative paths
+
+## Important Root Files
+
+### `README.md`
+- Main project documentation
+- Architecture overview
+- Quick start guide
+- Component descriptions
+
+### `BOOTSTRAP.md`
+- Complete bootstrap guide from empty nodes to full cluster
+- OS layer setup (Ubuntu, containerd, kubeadm)
+- ArgoCD installation
+- GitOps bootstrap steps
+
+### `ARCHITECTURE.md`
+- Architecture diagrams
+- Component details
+- Data flow
+- Node architecture
+- Security model
+
+### `QUICK_REFERENCE.md`
+- Common commands (ArgoCD, kubectl, Ceph, Vault)
+- File locations for common tasks
+- Troubleshooting commands
+- URLs and access points
+
+### `.gitignore`
+- Excludes secrets and sensitive files
+- IDE files
+- Temporary files
+
+## GitOps Pattern
+
+### App-of-Apps Pattern
+1. **Root Application** (`clusters/prod/argocd-root.yaml`)
+   - Applied manually once
+   - Recursively discovers all Applications in `clusters/prod/`
+
+2. **Infrastructure Applications** (`clusters/prod/infra/`)
+   - Each file defines one infrastructure component
+   - References Helm charts from public repositories
+   - Points to values files in `infra/`
+
+3. **Application Applications** (`clusters/prod/apps/`)
+   - Grouping applications (`business.yaml`, `platform.yaml`)
+   - Individual application manifests
+   - References Helm charts and values in `apps/`
+
+### File Path Conventions
+
+**ArgoCD Application → Helm Values**:
+- From `clusters/prod/infra/kong.yaml` → `infra/kong/values.yaml`
+- Path: `../../../infra/kong/values.yaml` (relative from clusters/prod/infra/)
+
+**ArgoCD Application → Raw YAML**:
+- From `clusters/prod/infra/namespaces.yaml` → `infra/namespaces/`
+- Path: `infra/namespaces` (relative from repo root)
+
+**ArgoCD Application → Application Values**:
+- From `clusters/prod/apps/business/store-api.yaml` → `apps/business/store-api/values.yaml`
+- Path: `../../../../apps/business/store-api/values.yaml` (relative from clusters/prod/apps/business/)
+
+## Key Principles
+
+1. **Helm First**: Use Helm charts for everything possible
+2. **Raw YAML Only When Necessary**: Namespaces, node labels, CRDs without Helm charts
+3. **Separation of Concerns**: 
+   - `clusters/` = What to deploy (ArgoCD Applications)
+   - `infra/` = Infrastructure configuration
+   - `apps/` = Application configuration
+4. **No Secrets in Git**: Use External Secrets Operator
+5. **Version Pinning**: Pin chart versions in Application manifests
+6. **Cluster-per-Folder**: `clusters/prod/` can be extended with `clusters/staging/`, `clusters/test/`
+
+## Adding New Components
+
+### New Infrastructure Component
+1. Create directory: `infra/my-component/`
+2. Add `values.yaml` (or raw YAML files)
+3. Create Application: `clusters/prod/infra/my-component.yaml`
+4. Reference values file with relative path
+
+### New Business Application
+1. Create directory: `apps/business/my-app/`
+2. Add `values.yaml`
+3. Create Application: `clusters/prod/apps/business/my-app.yaml`
+4. Reference values file with relative path
+
+## File Naming Conventions
+
+- **ArgoCD Applications**: `{component-name}.yaml` (e.g., `kong.yaml`, `store-api.yaml`)
+- **Helm Values**: Always `values.yaml`
+- **Raw YAML**: Descriptive names (e.g., `cephcluster.yaml`, `namespaces.yaml`)
+- **Documentation**: `README.md` in component directories when needed
+
+## Important Notes
+
+- **Never commit secrets** - Use External Secrets Operator
+- **Always use relative paths** in ArgoCD Applications
+- **Update repository URLs** before first deployment
+- **Configure domain names** in Cloudflare config and ingress settings
+- **Label nodes** before deploying infrastructure components with node affinity

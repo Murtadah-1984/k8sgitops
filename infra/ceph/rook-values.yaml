@@ -1,0 +1,74 @@
+# Rook Ceph Operator Helm Values
+
+operatorNamespace: rook-ceph
+
+# Ceph Operator
+cephClusterSpec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v18.2.0
+    allowUnsupported: false
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    deviceFilter: "^sd[b-z]"
+    config:
+      osdsPerDevice: "1"
+  resources:
+    mgr:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    mon:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+    osd:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+
+# Node affinity for Ceph nodes
+placement:
+  all:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node.ceph.storage
+                operator: In
+                values:
+                  - "true"
+    tolerations:
+      - key: node.ceph.storage
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+
+# RBD CSI Driver
+csi:
+  enableRbdDriver: true
+  enableCephfsDriver: true
+  enableNFSSnapshotter: false
+
+# Storage Classes
+storageClass:
+  enabled: true
+  default: true
+  name: rook-ceph-block
+  reclaimPolicy: Retain
+  allowVolumeExpansion: true
+  volumeBindingMode: Immediate
+

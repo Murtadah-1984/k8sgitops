@@ -1,0 +1,42 @@
+# Kong Gateway Node Labels and Taints
+# Apply these to nodes dedicated to Kong Gateway
+
+apiVersion: v1
+kind: Node
+metadata:
+  name: kong-01
+  labels:
+    node.kong.gateway: "true"
+    node.role: "gateway"
+spec:
+  taints:
+    - key: node.kong.gateway
+      value: "true"
+      effect: NoSchedule
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: kong-02
+  labels:
+    node.kong.gateway: "true"
+    node.role: "gateway"
+spec:
+  taints:
+    - key: node.kong.gateway
+      value: "true"
+      effect: NoSchedule
+---
+apiVersion: v1
+kind: Node
+metadata:
+  name: kong-03
+  labels:
+    node.kong.gateway: "true"
+    node.role: "gateway"
+spec:
+  taints:
+    - key: node.kong.gateway
+      value: "true"
+      effect: NoSchedule
+

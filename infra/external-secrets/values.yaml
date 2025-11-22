@@ -1,0 +1,50 @@
+# External Secrets Operator Helm Values
+
+# Controller configuration
+controller:
+  replicas: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Webhook configuration
+webhook:
+  replicas: 2
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Cert controller
+certController:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Security context
+securityContext:
+  fsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+
+# CRDs
+crds:
+  manage: true
+

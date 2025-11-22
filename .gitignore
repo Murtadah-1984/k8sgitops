@@ -1,0 +1,26 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Secrets (never commit!)
+**/secrets/
+**/*secret*.yaml
+**/*credential*.yaml
+**/*password*.yaml
+**/*key*.yaml
+!**/node-pools/*.yaml
+
+# Temporary files
+*.tmp
+*.log
+
+# ArgoCD
+.argocd/
+

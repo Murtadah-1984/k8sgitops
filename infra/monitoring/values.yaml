@@ -1,0 +1,131 @@
+# kube-prometheus-stack Helm Values
+# Production monitoring stack with Prometheus, Grafana, and AlertManager
+
+# Prometheus Operator
+prometheusOperator:
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+# Prometheus
+prometheus:
+  enabled: true
+  prometheusSpec:
+    replicas: 2
+    retention: 30d
+    retentionSize: 50GB
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: rook-ceph-block
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 100Gi
+    resources:
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+      requests:
+        cpu: 2000m
+        memory: 4Gi
+    nodeSelector:
+      node.role: "worker"
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+
+# Grafana
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: "" # Use External Secrets Operator
+  persistence:
+    enabled: true
+    storageClassName: rook-ceph-block
+    size: 10Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: kong
+    annotations:
+      konghq.com/strip-path: "true"
+    hosts:
+      - grafana.yourdomain.com
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.yourdomain.com
+
+# AlertManager
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 2
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: rook-ceph-block
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+
+# Node Exporter
+nodeExporter:
+  enabled: true
+
+# kube-state-metrics
+kubeStateMetrics:
+  enabled: true
+
+# Default rules
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserverAvailability: true
+    kubeApiserverBurnrate: true
+    kubeApiserverHistogram: true
+    kubeApiserverSlos: true
+    kubelet: true
+    kubeProxy: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeRecording: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    network: true
+    node: true
+    nodeExporterAlerting: true
+    nodeExporterRecording: true
+    prometheus: true
+    prometheusOperator: true
+
+# Service Monitors
+serviceMonitorSelectorNilUsesHelmValues: false
+podMonitorSelectorNilUsesHelmValues: false
+

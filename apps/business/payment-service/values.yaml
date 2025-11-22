@@ -1,0 +1,50 @@
+# Example Business Application: Payment Service
+# Using Bitnami nginx chart as example - replace with your actual chart
+
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  ingressClassName: kong
+  annotations:
+    konghq.com/strip-path: "true"
+  hosts:
+    - host: payment.yourdomain.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: payment-tls
+      hosts:
+        - payment.yourdomain.com
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+nodeSelector:
+  node.role: "worker"
+
+tolerations: []
+
+affinity: {}
+

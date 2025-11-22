@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: node-pools
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR/repo.git
+    targetRevision: main
+    path: infra/node-pools
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+
