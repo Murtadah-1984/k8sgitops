@@ -54,14 +54,14 @@ server:
     annotations:
       konghq.com/strip-path: "true"
     hosts:
-      - host: vault.yourdomain.com
+      - host: vault.arajeez-cloud.com
         paths:
           - path: /
             pathType: Prefix
     tls:
       - secretName: vault-tls
         hosts:
-          - vault.yourdomain.com
+          - vault.arajeez-cloud.com
 
 # Vault Agent Injector
 injector:

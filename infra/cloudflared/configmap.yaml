@@ -5,24 +5,24 @@ metadata:
   namespace: cloudflared
 data:
   config.yaml: |
-    tunnel: YOUR_TUNNEL_ID
+    tunnel: e25489a5-a0e3-4d4c-b6df-0df21545c65d
     credentials-file: /etc/cloudflared/creds/credentials.json
     
     ingress:
       # Kong Gateway
-      - hostname: kong.yourdomain.com
+      - hostname: kong.arajeez-cloud.com
         service: http://kong-proxy.kong.svc.cluster.local:80
       
       # Grafana
-      - hostname: grafana.yourdomain.com
+      - hostname: grafana.arajeez-cloud.com
         service: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local:80
       
       # Vault
-      - hostname: vault.yourdomain.com
+      - hostname: vault.arajeez-cloud.com
         service: http://vault-internal.vault.svc.cluster.local:8200
       
       # ArgoCD
-      - hostname: argocd.yourdomain.com
+      - hostname: argocd.arajeez-cloud.com
         service: http://argocd-server.argocd.svc.cluster.local:80
       
       # Catch-all

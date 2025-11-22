@@ -63,11 +63,11 @@ grafana:
     annotations:
       konghq.com/strip-path: "true"
     hosts:
-      - grafana.yourdomain.com
+      - grafana.arajeez-cloud.com
     tls:
       - secretName: grafana-tls
         hosts:
-          - grafana.yourdomain.com
+          - grafana.arajeez-cloud.com
 
 # AlertManager
 alertmanager:

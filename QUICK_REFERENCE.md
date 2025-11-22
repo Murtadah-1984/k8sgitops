@@ -168,10 +168,10 @@ kubectl exec -it rook-ceph-tools -n rook-ceph -- ceph status
 
 ## URLs (After Configuration)
 
-- **ArgoCD**: `https://argocd.yourdomain.com`
-- **Grafana**: `https://grafana.yourdomain.com`
-- **Vault**: `https://vault.yourdomain.com`
-- **Kong Manager**: `https://kong.yourdomain.com`
+- **ArgoCD**: `https://argocd.arajeez-cloud.com`
+- **Grafana**: `https://grafana.arajeez-cloud.com`
+- **Vault**: `https://vault.arajeez-cloud.com`
+- **Kong Manager**: `https://kong.arajeez-cloud.com`
 
 ## Important Notes
 

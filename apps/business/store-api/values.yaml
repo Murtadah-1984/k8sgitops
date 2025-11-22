@@ -18,14 +18,14 @@ ingress:
   annotations:
     konghq.com/strip-path: "true"
   hosts:
-    - host: store-api.yourdomain.com
+    - host: store-api.arajeez-cloud.com
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: store-api-tls
       hosts:
-        - store-api.yourdomain.com
+        - store-api.arajeez-cloud.com
 
 resources:
   limits:

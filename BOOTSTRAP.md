@@ -232,10 +232,10 @@ kubectl get ingress --all-namespaces
 
 ### 5.2 Access Services
 
-- **ArgoCD**: `https://argocd.yourdomain.com`
-- **Grafana**: `https://grafana.yourdomain.com`
-- **Vault**: `https://vault.yourdomain.com`
-- **Kong Manager**: `https://kong.yourdomain.com`
+- **ArgoCD**: `https://argocd.arajeez-cloud.com`
+- **Grafana**: `https://grafana.arajeez-cloud.com`
+- **Vault**: `https://vault.arajeez-cloud.com`
+- **Kong Manager**: `https://kong.arajeez-cloud.com`
 
 ### 5.3 Configure DNS
 

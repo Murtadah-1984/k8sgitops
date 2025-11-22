@@ -18,14 +18,14 @@ ingress:
   annotations:
     konghq.com/strip-path: "true"
   hosts:
-    - host: payment.yourdomain.com
+    - host: payment.arajeez-cloud.com
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: payment-tls
       hosts:
-        - payment.yourdomain.com
+        - payment.arajeez-cloud.com
 
 resources:
   limits:
