@@ -1,71 +1,32 @@
-# HashiCorp Vault Helm Values
+# Bitnami Vault Helm Values
 # HA Vault with Raft storage on Ceph RBD
+
+global:
+  storageClass: "rook-ceph-block"
+
+tls:
+  enabled: false
 
 server:
   enabled: true
-  
-  # High Availability with Raft (Integrated Storage)
+
   ha:
     enabled: true
-    replicas: 3
-    
-    # Raft storage configuration
     raft:
       enabled: true
-      config: |
-        ui = true
-        
-        listener "tcp" {
-          tls_disable = 1
-          address = "[::]:8200"
-          cluster_address = "[::]:8201"
-        }
-        
-        storage "raft" {
-          path = "/vault/data"
-        }
-        
-        service_registration "kubernetes" {}
-    
-    # Data storage on Ceph RBD
-    dataStorage:
-      enabled: true
-      storageClass: "rook-ceph-block"
-      size: 10Gi
-      accessMode: ReadWriteOnce
-    
-    # Audit storage (optional, disabled for now)
-    auditStorage:
-      enabled: false
-  
-  # Resource limits
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
-  
-  # Service
-  service:
-    type: ClusterIP
-  
-  # Ingress (disabled initially - can be enabled later)
-  ingress:
+
+  authDelegator:
+    enabled: true
+
+  standalone:
     enabled: false
 
-# Global settings
-global:
-  tlsDisable: true
+  dataStorage:
+    size: 10Gi
+    storageClass: "rook-ceph-block"
+    accessModes:
+      - ReadWriteOnce
 
-# Vault Agent Injector
-injector:
-  enabled: true
-  resources:
-    limits:
-      cpu: 500m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+ingress:
+  enabled: false
+
