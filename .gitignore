@@ -33,19 +33,15 @@ Thumbs.db
 !infra/ceph/
 !infra/ceph/**
 
-# Temporarily ignore vault to trigger ArgoCD refresh
-clusters/prod/infra/vault.yaml
-infra/vault/
-
 # Keep all vault-related files
-# !clusters/prod/infra/vault.yaml
-# !infra/vault/
-# !infra/vault/**
+!clusters/prod/infra/vault.yaml
+!infra/vault/
+!infra/vault/**
 
 # Ignore all other infrastructure applications
 clusters/prod/infra/*.yaml
 !clusters/prod/infra/ceph*.yaml
-# !clusters/prod/infra/vault.yaml
+!clusters/prod/infra/vault.yaml
 
 # Ignore all application applications
 clusters/prod/apps/
@@ -54,8 +50,8 @@ clusters/prod/apps/
 infra/*
 !infra/ceph/
 !infra/ceph/**
-# !infra/vault/
-# !infra/vault/**
+!infra/vault/
+!infra/vault/**
 
 # Ignore all application configs
 apps/
