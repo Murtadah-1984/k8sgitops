@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
+    repoURL: oci://registry-1.docker.io/bitnamicharts
     chart: vault
-    targetRevision: 9.1.4
+    targetRevision: "0.28.0"
     helm:
       valueFiles:
         - infra/vault/values.yaml
