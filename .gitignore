@@ -24,3 +24,27 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
+# Gradual deployment - ignore everything except argocd-root.yaml and ceph
+# Keep argocd-root.yaml
+!clusters/prod/argocd-root.yaml
+
+# Keep all ceph-related files
+!clusters/prod/infra/ceph*.yaml
+!infra/ceph/
+!infra/ceph/**
+
+# Ignore all other infrastructure applications
+clusters/prod/infra/*.yaml
+!clusters/prod/infra/ceph*.yaml
+
+# Ignore all application applications
+clusters/prod/apps/
+
+# Ignore all infrastructure configs except ceph
+infra/*
+!infra/ceph/
+!infra/ceph/**
+
+# Ignore all application configs
+apps/
+
