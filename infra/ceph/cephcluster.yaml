@@ -15,7 +15,7 @@ spec:
     allowUnsupported: false
   dataDirHostPath: /var/lib/rook
   mon:
-    count: 3
+    count: 1
     allowMultiplePerNode: false
   storage:
     useAllNodes: false
