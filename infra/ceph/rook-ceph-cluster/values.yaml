@@ -20,6 +20,7 @@ cephCluster:
           - name: /dev/nvme0n1
     config:
       osdsPerDevice: "1"
+      osd_pool_default_size: "2"
   resources:
     mgr:
       limits:
