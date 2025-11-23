@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: "oci://registry-1.docker.io/hashicorp/vault"
     chart: vault
-    targetRevision: "0.28.1"
+    targetRevision: "0.28.0"
     helm:
       valueFiles:
-        - ../../../infra/vault/values.yaml
+        - infra/vault/values.yaml
   destination:
     namespace: vault
     server: https://kubernetes.default.svc
@@ -22,4 +22,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
 
