@@ -1,0 +1,28 @@
+---
+- name: Wipe and prepare Ceph OSD disks
+  hosts: ceph-osd
+  become: true
+  gather_facts: yes
+
+  vars:
+    # Default devices - customize per node using host_vars if needed
+    # k8s-ceph-02: /dev/nvme0n1
+    # k8s-ceph-03: /dev/nvme0n1
+    # Note: This playbook uses default vars - use host_vars for per-node customization
+    ceph_osd_devices:
+      - /dev/nvme0n1
+
+  tasks:
+    - name: Ensure disks are not mounted
+      ansible.builtin.command: umount {{ item }}
+      with_items: "{{ ceph_osd_devices }}"
+      ignore_errors: true
+
+    - name: Zap disks (destroy partitions & signatures)
+      ansible.builtin.command: "sgdisk --zap-all {{ item }}"
+      with_items: "{{ ceph_osd_devices }}"
+
+    - name: Wipe filesystem signatures
+      ansible.builtin.command: "wipefs -a {{ item }}"
+      with_items: "{{ ceph_osd_devices }}"
+

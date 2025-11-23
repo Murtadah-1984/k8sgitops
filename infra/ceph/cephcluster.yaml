@@ -1,3 +1,9 @@
+# DEPRECATED: This file is no longer used.
+# CephCluster is now managed via Helm chart: infra/ceph/rook-ceph-cluster/
+# The ArgoCD Application ceph-cluster.yaml references the Helm chart.
+#
+# This file is kept for reference only.
+
 apiVersion: ceph.rook.io/v1
 kind: CephCluster
 metadata:

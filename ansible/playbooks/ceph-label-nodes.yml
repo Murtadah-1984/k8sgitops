@@ -1,0 +1,20 @@
+---
+- name: Label Ceph nodes in Kubernetes
+  hosts: localhost
+  connection: local
+  vars:
+    kubeconfig: ~/.kube/config
+  tasks:
+    - name: Label mon node
+      ansible.builtin.command: >
+        kubectl --kubeconfig {{ kubeconfig }} label node k8s-ceph-mon-01
+        ceph-mon=enabled ceph-osd=enabled --overwrite=true
+
+    - name: Label osd nodes
+      ansible.builtin.command: >
+        kubectl --kubeconfig {{ kubeconfig }} label node {{ item }}
+        ceph-osd=enabled --overwrite=true
+      loop:
+        - k8s-ceph-02
+        - k8s-ceph-03
+

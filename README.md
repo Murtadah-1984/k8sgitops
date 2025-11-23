@@ -66,9 +66,13 @@ gitops/
 - **Node Affinity**: Dedicated nodes with label `node.kong.gateway: "true"`
 
 ### Ceph Storage (Rook)
-- **Chart**: `charts.rook.io/release/rook-ceph`
+- **Operator Chart**: `charts.rook.io/release/rook-ceph`
+- **Cluster Chart**: Custom Helm chart at `infra/ceph/rook-ceph-cluster/`
 - **Namespace**: `rook-ceph`
-- **Node Affinity**: Dedicated nodes with label `node.ceph.storage: "true"`
+- **Node Labels**: 
+  - MON nodes: `ceph-mon=enabled`
+  - OSD nodes: `ceph-osd=enabled`
+- **Node Preparation**: Ansible playbooks in `ansible/playbooks/`
 
 ### Monitoring Stack
 - **Chart**: `prometheus-community.github.io/helm-charts/kube-prometheus-stack`
@@ -106,7 +110,13 @@ gitops/
    - TLS certificates
    - API keys
 
-4. **Configure node labels**:
+4. **Prepare Ceph nodes** (if using Ceph):
+   - Edit `ansible/inventory/hosts.ini` with your node IPs
+   - Run `ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/ceph-node-prepare.yml`
+   - Run `ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/ceph-label-nodes.yml`
+   - **WARNING**: Only run `ceph-osd-disks.yml` on fresh disks (wipes data!)
+
+5. **Configure node labels**:
    - Apply node labels/taints from `infra/node-pools/` to your nodes
    - Or update node selectors in Helm values if using different labels
 
@@ -115,7 +125,8 @@ gitops/
 Nodes should be labeled and tainted according to their role:
 
 - **Kong nodes**: `node.kong.gateway: "true"` with taint
-- **Ceph nodes**: `node.ceph.storage: "true"` with taint
+- **Ceph MON nodes**: `ceph-mon=enabled` (no taint)
+- **Ceph OSD nodes**: `ceph-osd=enabled` (no taint)
 - **Worker nodes**: `node.role: "worker"` (no taint)
 
 Apply node configurations:
@@ -180,6 +191,8 @@ argocd app sync <app-name>
 
 - [Kong Gateway](infra/kong/README.md)
 - [Applications](apps/README.md)
+- [Disaster Recovery](DISASTER_RECOVERY.md) - Complete cluster recovery guide
+- [Ansible Playbooks](ansible/README.md) - Ceph node preparation
 
 ## License
 

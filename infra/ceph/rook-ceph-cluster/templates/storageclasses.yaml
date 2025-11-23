@@ -1,0 +1,24 @@
+{{- range .Values.blockPools }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .storageClass.name }}
+  {{- if .storageClass.isDefault }}
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  {{- end }}
+provisioner: rook-ceph.rbd.csi.ceph.com
+reclaimPolicy: {{ .storageClass.reclaimPolicy }}
+allowVolumeExpansion: {{ .storageClass.allowVolumeExpansion }}
+volumeBindingMode: {{ .storageClass.volumeBindingMode }}
+parameters:
+  {{- toYaml .storageClass.parameters | nindent 2 }}
+  pool: {{ .name }}
+  clusterID: rook-ceph
+  imageFeatures: "layering"
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+{{- end }}

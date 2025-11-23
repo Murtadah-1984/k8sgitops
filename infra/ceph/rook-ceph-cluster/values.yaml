@@ -1,0 +1,104 @@
+cephCluster:
+  cephVersion:
+    image: quay.io/ceph/ceph:v18.2.0
+    allowUnsupported: false
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 1
+    allowMultiplePerNode: false
+  network:
+    provider: host
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    nodes:
+      - name: k8s-ceph-02
+        devices:
+          - name: /dev/nvme0n1
+      - name: k8s-ceph-03
+        devices:
+          - name: /dev/nvme0n1
+    config:
+      osdsPerDevice: "1"
+  resources:
+    mgr:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    mon:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+    osd:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+  placement:
+    all:
+      tolerations: []
+    osd:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: ceph-osd
+                  operator: In
+                  values: ["enabled"]
+    mon:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: ceph-mon
+                  operator: In
+                  values: ["enabled"]
+
+blockPools:
+  - name: replicapool
+    spec:
+      replicated:
+        size: 2
+    storageClass:
+      name: rook-ceph-block
+      isDefault: true
+      reclaimPolicy: Retain
+      allowVolumeExpansion: true
+      volumeBindingMode: Immediate
+      parameters:
+        imageFormat: "2"
+        imageFeatures: layering
+        csi.storage.k8s.io/fstype: xfs
+
+# CephFS filesystems (optional)
+# Uncomment and configure if you need CephFS support
+# cephFilesystems:
+#   - name: myfs
+#     spec:
+#       metadataPool:
+#         replicated:
+#           size: 3
+#       dataPools:
+#         - name: myfs-data0
+#           replicated:
+#             size: 3
+#       preserveFilesystemOnDelete: true
+#       metadataServer:
+#         activeCount: 1
+#         activeStandby: true
+#     storageClass:
+#       name: rook-cephfs
+#       isDefault: false
+#       reclaimPolicy: Delete
+#       allowVolumeExpansion: true
+#       volumeBindingMode: Immediate
+#       parameters: {}
+
