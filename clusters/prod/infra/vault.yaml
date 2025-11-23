@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://helm.releases.hashicorp.com
+    repoURL: "oci://registry-1.docker.io/hashicorp/vault"
     chart: vault
-    targetRevision: 0.28.1
+    targetRevision: "0.28.1"
     helm:
       valueFiles:
         - ../../../infra/vault/values.yaml
@@ -21,4 +21,5 @@ spec:
       prune: true
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
 
