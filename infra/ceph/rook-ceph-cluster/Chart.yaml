@@ -1,0 +1,7 @@
+apiVersion: v2
+name: rook-ceph-cluster
+description: Rook CephCluster configuration for k8s-ceph nodes
+type: application
+version: 0.1.0
+appVersion: "18.2.0"
+
