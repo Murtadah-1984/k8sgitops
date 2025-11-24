@@ -33,25 +33,31 @@ Thumbs.db
 !infra/ceph/
 !infra/ceph/**
 
-# Ignore vault, kong, cert-manager
-clusters/prod/infra/vault.yaml
+# Keep all vault-related files
+!clusters/prod/infra/vault.yaml
+!infra/vault/
+!infra/vault/**
+
+# Ignore kong, cert-manager
 clusters/prod/infra/kong.yaml
 clusters/prod/infra/cert-manager.yaml
-infra/vault/
 infra/kong/
 infra/cert-manager/
 
 # Ignore all other infrastructure applications
 clusters/prod/infra/*.yaml
 !clusters/prod/infra/ceph*.yaml
+!clusters/prod/infra/vault.yaml
 
 # Ignore all application applications
 clusters/prod/apps/
 
-# Ignore all infrastructure configs except ceph
+# Ignore all infrastructure configs except ceph and vault
 infra/*
 !infra/ceph/
 !infra/ceph/**
+!infra/vault/
+!infra/vault/**
 
 # Ignore all application configs
 apps/
