@@ -14,6 +14,24 @@ spec:
         csi:
           enableRbdDriver: true
           enableCephfsDriver: true
+          rbd:
+            plugin:
+              resources:
+                limits:
+                  memory: 512Mi
+            provisioner:
+              resources:
+                limits:
+                  memory: 256Mi
+          cephfs:
+            plugin:
+              resources:
+                limits:
+                  memory: 512Mi
+            provisioner:
+              resources:
+                limits:
+                  memory: 256Mi
   destination:
     namespace: rook-ceph
     server: https://kubernetes.default.svc
