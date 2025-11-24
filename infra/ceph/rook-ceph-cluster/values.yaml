@@ -8,6 +8,8 @@ cephCluster:
     allowMultiplePerNode: false
   mgr:
     count: 1
+  rbdMirroring:
+    enabled: false
   config:
     global:
       mon_data_avail_warn: "5"
@@ -80,6 +82,11 @@ blockPools:
     spec:
       replicated:
         size: 2
+      parameters:
+        compression_mode: aggressive
+        compression_algorithm: zstd
+        readahead: "128K"
+        recovery_sleep: "0.1"
     storageClass:
       name: rook-ceph-block
       isDefault: true

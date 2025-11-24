@@ -15,6 +15,10 @@ spec:
   mgr:
     {{- toYaml .Values.cephCluster.mgr | nindent 4 }}
   {{- end }}
+  {{- if .Values.cephCluster.rbdMirroring }}
+  rbdMirroring:
+    {{- toYaml .Values.cephCluster.rbdMirroring | nindent 4 }}
+  {{- end }}
   {{- if .Values.cephCluster.config }}
   config:
     {{- toYaml .Values.cephCluster.config | nindent 4 }}
