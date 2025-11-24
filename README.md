@@ -72,7 +72,7 @@ gitops/
 - **Node Labels**: 
   - MON nodes: `ceph-mon=enabled`
   - OSD nodes: `ceph-osd=enabled`
-- **Node Preparation**: Ansible playbooks in `ansible/playbooks/`
+- **Node Preparation**: Nodes prepared at OS level
 
 ### Monitoring Stack
 - **Chart**: `prometheus-community.github.io/helm-charts/kube-prometheus-stack`
@@ -111,10 +111,8 @@ gitops/
    - API keys
 
 4. **Prepare Ceph nodes** (if using Ceph):
-   - Edit `ansible/inventory/hosts.ini` with your node IPs
-   - Run `ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/ceph-node-prepare.yml`
-   - Run `ansible-playbook -i ansible/inventory/hosts.ini ansible/playbooks/ceph-label-nodes.yml`
-   - **WARNING**: Only run `ceph-osd-disks.yml` on fresh disks (wipes data!)
+   - Nodes should be prepared at OS level with required packages and settings
+   - Label nodes manually or via your node management process
 
 5. **Configure node labels**:
    - Apply node labels/taints from `infra/node-pools/` to your nodes
@@ -192,7 +190,6 @@ argocd app sync <app-name>
 - [Kong Gateway](infra/kong/README.md)
 - [Applications](apps/README.md)
 - [Disaster Recovery](DISASTER_RECOVERY.md) - Complete cluster recovery guide
-- [Ansible Playbooks](ansible/README.md) - Ceph node preparation
 
 ## License
 

@@ -11,39 +11,26 @@ When your cluster dies completely but **Ceph OSD disks are intact**, follow thes
 - Ceph OSD nodes have **intact disks** with existing Ceph data
 - Same hostnames, IPs, and VLANs as before
 - Access to your GitOps repository
-- Ansible playbooks configured
+- Nodes prepared at OS level
 
 ## Recovery Steps
 
 ### 1. Rebuild Kubernetes Cluster
 
-Rebuild your control-plane and worker nodes using your existing K8s + CIS hardening scripts/Ansible playbooks.
+Rebuild your control-plane and worker nodes using your existing K8s + CIS hardening scripts.
 
 **Important**: Use the same:
 - Hostnames (`k8s-ceph-mon-01`, `k8s-ceph-01`, `k8s-ceph-02`)
 - IP addresses
 - VLAN configurations
 
-### 2. Prepare Ceph Nodes (Ansible)
+### 2. Prepare Ceph Nodes
 
-Run the Ceph node preparation playbook to ensure OS-level settings:
-
-```bash
-cd ansible
-ansible-playbook -i inventory/hosts.ini playbooks/ceph-node-prepare.yml
-```
-
-**DO NOT** run `ceph-osd-disks.yml` - this would wipe your existing Ceph data!
+Ensure nodes are prepared at OS level with required packages and settings.
 
 ### 3. Label Ceph Nodes
 
-Label the Kubernetes nodes for Ceph placement:
-
-```bash
-ansible-playbook -i inventory/hosts.ini playbooks/ceph-label-nodes.yml
-```
-
-Or manually:
+Label the Kubernetes nodes for Ceph placement manually:
 ```bash
 kubectl label node k8s-ceph-mon-01 ceph-mon=enabled ceph-osd=enabled --overwrite=true
 kubectl label node k8s-ceph-02 ceph-osd=enabled --overwrite=true
@@ -104,7 +91,7 @@ kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- ceph status
 ## Recovery Timeline
 
 1. **K8s rebuild**: ~30-60 minutes (depends on your automation)
-2. **Ansible prep**: ~5 minutes
+2. **Node prep**: ~5 minutes (if needed)
 3. **ArgoCD install**: ~5-10 minutes
 4. **GitOps sync**: ~10-20 minutes (operator + cluster)
 5. **OSD reattachment**: ~5-15 minutes (Rook discovers existing OSDs)
@@ -185,25 +172,5 @@ To test your recovery process:
 
 ## Automation
 
-Consider automating steps 2-5 in a recovery playbook:
-
-```yaml
-# ansible/playbooks/disaster-recovery.yml
-- name: Disaster Recovery - Ceph Cluster
-  hosts: localhost
-  tasks:
-    - name: Prepare Ceph nodes
-      include_tasks: ceph-node-prepare.yml
-      delegate_to: "{{ item }}"
-      loop: "{{ groups['ceph'] }}"
-    
-    - name: Label nodes
-      include_tasks: ceph-label-nodes.yml
-    
-    - name: Install ArgoCD (if needed)
-      # ... kubectl apply ...
-    
-    - name: Apply root app
-      # ... kubectl apply ...
-```
+Consider automating steps 2-5 in a recovery script or your preferred automation tool.
 
