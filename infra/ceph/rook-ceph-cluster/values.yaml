@@ -45,6 +45,8 @@ cephCluster:
     useAllNodes: false
     useAllDevices: false
     nodes:
+      - name: k8s-ceph-mon-01
+        devices: []         # no OSDs here, but it's allowed for MON
       - name: k8s-ceph-02
         devices:
           - name: /dev/nvme0n1
