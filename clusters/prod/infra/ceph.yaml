@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rook-ceph-operator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.rook.io/release
+    chart: rook-ceph
+    targetRevision: v1.15.0
+    helm:
+      values: |
+        csi:
+          enableRbdDriver: true
+          enableCephfsDriver: true
+          rbd:
+            plugin:
+              resources:
+                limits:
+                  memory: 512Mi
+            provisioner:
+              resources:
+                limits:
+                  memory: 256Mi
+          cephfs:
+            plugin:
+              resources:
+                limits:
+                  memory: 512Mi
+            provisioner:
+              resources:
+                limits:
+                  memory: 256Mi
+  destination:
+    namespace: rook-ceph
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
