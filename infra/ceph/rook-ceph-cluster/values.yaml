@@ -62,16 +62,6 @@ cephCluster:
                 - key: ceph-mon
                   operator: In
                   values: ["enabled"]
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                    - rook-ceph-mon
-            topologyKey: kubernetes.io/hostname
-
 blockPools:
   - name: replicapool
     spec:
