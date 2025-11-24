@@ -78,27 +78,26 @@ blockPools:
         imageFeatures: layering
         csi.storage.k8s.io/fstype: xfs
 
-# CephFS filesystems (optional)
-# Uncomment and configure if you need CephFS support
-# cephFilesystems:
-#   - name: myfs
-#     spec:
-#       metadataPool:
-#         replicated:
-#           size: 3
-#       dataPools:
-#         - name: myfs-data0
-#           replicated:
-#             size: 3
-#       preserveFilesystemOnDelete: true
-#       metadataServer:
-#         activeCount: 1
-#         activeStandby: true
-#     storageClass:
-#       name: rook-cephfs
-#       isDefault: false
-#       reclaimPolicy: Delete
-#       allowVolumeExpansion: true
-#       volumeBindingMode: Immediate
-#       parameters: {}
+# CephFS filesystems
+cephFilesystems:
+  - name: myfs
+    spec:
+      metadataPool:
+        replicated:
+          size: 2
+      dataPools:
+        - name: myfs-data0
+          replicated:
+            size: 2
+      preserveFilesystemOnDelete: true
+      metadataServer:
+        activeCount: 1
+        activeStandby: true
+    storageClass:
+      name: rook-cephfs
+      isDefault: false
+      reclaimPolicy: Delete
+      allowVolumeExpansion: true
+      volumeBindingMode: Immediate
+      parameters: {}
 
