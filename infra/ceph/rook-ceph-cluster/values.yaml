@@ -113,6 +113,9 @@ cephFilesystems:
       metadataServer:
         activeCount: 1
         activeStandby: true
+        resources:
+          limits:
+            memory: 1Gi
     storageClass:
       name: rook-cephfs
       isDefault: false
