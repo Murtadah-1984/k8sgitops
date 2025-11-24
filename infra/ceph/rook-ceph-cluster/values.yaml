@@ -95,6 +95,18 @@ cephCluster:
       - name: k8s-ceph-02
       - name: k8s-ceph-03
     mon:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: ceph-mon
+              operator: In
+              values:
+              - enabled
+      nodes:
+      - name: k8s-ceph-mon-01
+      - name: k8s-ceph-02
+      - name: k8s-ceph-03
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
