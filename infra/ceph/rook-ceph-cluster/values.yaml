@@ -86,10 +86,11 @@ cephCluster:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
-            - matchExpressions:
-                - key: ceph-osd
-                  operator: In
-                  values: ["enabled"]
+          - matchExpressions:
+            - key: ceph-osd
+              operator: In
+              values:
+              - enabled
     mon:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
