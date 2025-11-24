@@ -4,7 +4,7 @@ cephCluster:
     allowUnsupported: false
   dataDirHostPath: /var/lib/rook
   mon:
-    count: 1
+    count: 3
     allowMultiplePerNode: false
   network:
     provider: host
