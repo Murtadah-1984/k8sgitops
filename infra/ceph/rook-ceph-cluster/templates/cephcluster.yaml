@@ -11,6 +11,10 @@ spec:
   mon:
     count: {{ .Values.cephCluster.mon.count }}
     allowMultiplePerNode: {{ .Values.cephCluster.mon.allowMultiplePerNode }}
+    {{- if .Values.cephCluster.mon.nodes }}
+    nodes:
+      {{- toYaml .Values.cephCluster.mon.nodes | nindent 6 }}
+    {{- end }}
   {{- if .Values.cephCluster.mgr }}
   mgr:
     {{- toYaml .Values.cephCluster.mgr | nindent 4 }}
