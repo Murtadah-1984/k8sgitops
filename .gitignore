@@ -28,30 +28,24 @@ Thumbs.db
 # Keep argocd-root.yaml
 !clusters/prod/argocd-root.yaml
 
-# Keep all ceph-related files
-!clusters/prod/infra/ceph*.yaml
-!infra/ceph/
-!infra/ceph/**
-
-# Ignore vault, kong, cert-manager
+# Temporarily ignore ceph, vault, kong, cert-manager to trigger ArgoCD refresh
+clusters/prod/infra/ceph*.yaml
 clusters/prod/infra/vault.yaml
 clusters/prod/infra/kong.yaml
 clusters/prod/infra/cert-manager.yaml
+infra/ceph/
 infra/vault/
 infra/kong/
 infra/cert-manager/
 
 # Ignore all other infrastructure applications
 clusters/prod/infra/*.yaml
-!clusters/prod/infra/ceph*.yaml
 
 # Ignore all application applications
 clusters/prod/apps/
 
-# Ignore all infrastructure configs except ceph
+# Ignore all infrastructure configs
 infra/*
-!infra/ceph/
-!infra/ceph/**
 
 # Ignore all application configs
 apps/
