@@ -11,6 +11,14 @@ spec:
   mon:
     count: {{ .Values.cephCluster.mon.count }}
     allowMultiplePerNode: {{ .Values.cephCluster.mon.allowMultiplePerNode }}
+  {{- if .Values.cephCluster.mgr }}
+  mgr:
+    {{- toYaml .Values.cephCluster.mgr | nindent 4 }}
+  {{- end }}
+  {{- if .Values.cephCluster.config }}
+  config:
+    {{- toYaml .Values.cephCluster.config | nindent 4 }}
+  {{- end }}
   network:
     provider: {{ .Values.cephCluster.network.provider }}
   storage:

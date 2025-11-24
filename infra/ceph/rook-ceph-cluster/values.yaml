@@ -8,6 +8,12 @@ cephCluster:
     allowMultiplePerNode: false
   mgr:
     count: 1
+  config:
+    global:
+      mon_data_avail_warn: "5"
+      mon_osd_down_out_subtree_limit: "host"
+      mon_osd_min_down_reporter: "1"
+      mon_clock_drift_allowed: "2"
   network:
     provider: host
   storage:
