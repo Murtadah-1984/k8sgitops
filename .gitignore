@@ -24,51 +24,10 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
-# Gradual deployment - ignore everything except argocd-root.yaml and ceph
-# Keep argocd-root.yaml
+# Ignore everything except argocd-root.yaml
+*
+!clusters/
+clusters/*
+!clusters/prod/
+clusters/prod/*
 !clusters/prod/argocd-root.yaml
-
-# Keep all ceph-related files
-!clusters/prod/infra/ceph*.yaml
-!infra/ceph/
-!infra/ceph/**
-
-# Keep all vault-related files
-!clusters/prod/infra/vault.yaml
-!infra/vault/
-!infra/vault/**
-
-# Keep all kong-related files
-!clusters/prod/infra/kong.yaml
-!infra/kong/
-!infra/kong/**
-
-# Keep all cert-manager-related files
-!clusters/prod/infra/cert-manager.yaml
-!infra/cert-manager/
-!infra/cert-manager/**
-
-# Ignore all other infrastructure applications
-clusters/prod/infra/*.yaml
-!clusters/prod/infra/ceph*.yaml
-!clusters/prod/infra/vault.yaml
-!clusters/prod/infra/kong.yaml
-!clusters/prod/infra/cert-manager.yaml
-
-# Ignore all application applications
-clusters/prod/apps/
-
-# Ignore all infrastructure configs except ceph, vault, kong, and cert-manager
-infra/*
-!infra/ceph/
-!infra/ceph/**
-!infra/vault/
-!infra/vault/**
-!infra/kong/
-!infra/kong/**
-!infra/cert-manager/
-!infra/cert-manager/**
-
-# Ignore all application configs
-apps/
-
