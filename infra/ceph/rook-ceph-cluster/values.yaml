@@ -95,6 +95,10 @@ cephCluster:
                 - key: ceph-mon
                   operator: In
                   values: ["enabled"]
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
 blockPools:
   - name: replicapool
     spec:
