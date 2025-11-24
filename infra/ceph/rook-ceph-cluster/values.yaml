@@ -1,3 +1,6 @@
+# CephCluster configuration
+# Note: RGW (Rados Gateway) is disabled - no CephObjectStore resource exists
+# Note: NFS is disabled - no CephNFS resource exists
 cephCluster:
   cephVersion:
     image: quay.io/ceph/ceph:v18.2.0
@@ -8,6 +11,17 @@ cephCluster:
     allowMultiplePerNode: false
   mgr:
     count: 1
+    # Disable expensive MGR modules to save ~1.5GB RAM
+    # These modules will be disabled via CephCluster spec
+    modules:
+      - name: dashboard
+        enabled: false
+      - name: prometheus
+        enabled: false
+      - name: nfs
+        enabled: false
+      - name: restful
+        enabled: false
   rbdMirroring:
     enabled: false
   config:
