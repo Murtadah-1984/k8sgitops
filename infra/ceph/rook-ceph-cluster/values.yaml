@@ -91,6 +91,9 @@ cephCluster:
               operator: In
               values:
               - enabled
+      nodes:
+      - name: k8s-ceph-02
+      - name: k8s-ceph-03
     mon:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
