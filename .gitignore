@@ -24,17 +24,10 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
-# Ignore everything except argocd-root.yaml and ceph
+# Ignore everything except argocd-root.yaml
 *
 !clusters/
 clusters/*
 !clusters/prod/
 clusters/prod/*
 !clusters/prod/argocd-root.yaml
-!clusters/prod/infra/
-clusters/prod/infra/*
-!clusters/prod/infra/ceph*.yaml
-!infra/
-infra/*
-!infra/ceph/
-infra/ceph/**
