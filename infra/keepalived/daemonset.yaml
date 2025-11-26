@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: keepalived
+  namespace: keepalived
+  labels:
+    app: keepalived
+spec:
+  selector:
+    matchLabels:
+      app: keepalived
+  template:
+    metadata:
+      labels:
+        app: keepalived
+    spec:
+      serviceAccountName: keepalived
+      hostNetwork: true
+      containers:
+        - name: keepalived
+          image: osixia/keepalived:2.0.20
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_BROADCAST
+                - NET_RAW
+                - SYS_TIME
+          volumeMounts:
+            - name: config
+              mountPath: /container/service/keepalived/assets/keepalived.conf
+              subPath: keepalived.conf
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "pgrep keepalived || exit 1"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "pgrep keepalived || exit 1"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: keepalived-config
+

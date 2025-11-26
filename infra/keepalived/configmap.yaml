@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keepalived-config
+  namespace: keepalived
+data:
+  keepalived.conf: |
+    global_defs {
+      router_id LVS_KUBERNETES
+    }
+    
+    # Virtual IP configuration for Kubernetes Control Plane
+    # Control Plane IPs: 10.0.20.11, 10.0.20.12, 10.0.20.13
+    # Adjust interface name to match your network
+    vrrp_instance VI_CONTROL_PLANE {
+      state MASTER
+      interface eno1.20
+      virtual_router_id 51
+      priority 100
+      advert_int 1
+      authentication {
+        auth_type PASS
+        auth_pass CP_VipSecret
+      }
+      virtual_ipaddress {
+        10.0.20.10/24  # VIP for Kubernetes Control Plane HA
+      }
+    }
+    
+    # Add additional VIPs as needed
+    vrrp_instance VI_KONG_VIP {
+      state BACKUP
+      interface eno1.50
+      virtual_router_id 52
+      priority 100
+      advert_int 1
+      authentication {
+          auth_type PASS
+          auth_pass kongVipSecret
+      }
+      virtual_ipaddress {
+          10.0.50.10/24
+      }
+    }
+

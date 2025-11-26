@@ -34,7 +34,22 @@ clusters/prod/*
 !clusters/prod/infra/
 clusters/prod/infra/*
 !clusters/prod/infra/ceph*.yaml
+!clusters/prod/infra/keepalived.yaml
+!clusters/prod/infra/metallb.yaml
+!clusters/prod/infra/kube-apiserver-lb.yaml
 !infra/
 infra/*
 !infra/ceph/
 infra/ceph/**
+!infra/keepalived/
+infra/keepalived/**
+!infra/metallb/
+infra/metallb/**
+!infra/kubernetes/
+infra/kubernetes/**
+!infra/namespaces/
+infra/namespaces/**
+
+# Ignore Calico
+**/calico/
+**/calico.yaml

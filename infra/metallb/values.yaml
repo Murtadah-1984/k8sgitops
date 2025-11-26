@@ -1,0 +1,40 @@
+# MetalLB LoadBalancer Configuration
+# Bitnami Helm Chart Values
+
+# IP Address Pool Configuration
+# Control Plane IPs: 10.0.20.11, 10.0.20.12, 10.0.20.13
+# Control Plane VIP: 10.0.20.10 (managed by keepalived)
+# MetalLB pool avoids control plane IPs
+configInline:
+  address-pools:
+    - name: control-plane-pool
+      protocol: layer2
+      addresses:
+        - 10.0.20.100-10.0.20.200  # MetalLB IP pool (excludes control plane IPs 10.0.20.11-13)
+    - name: kong-pool
+      protocol: layer2
+      addresses:
+        - 10.0.50.100-10.0.50.200
+
+# Controller configuration
+controller:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+# Speaker configuration
+speaker:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
