@@ -9,6 +9,32 @@ metadata:
   name: keepalived
   namespace: keepalived
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keepalived-config
+  namespace: keepalived
+data:
+  keepalived.conf: |
+    global_defs {
+      router_id LVS_KUBERNETES
+    }
+
+    vrrp_instance VI_CONTROL_PLANE {
+      state MASTER
+      interface eno1
+      virtual_router_id 51
+      priority 100
+      advert_int 1
+      authentication {
+        auth_type PASS
+        auth_pass CP_VipSecret
+      }
+      virtual_ipaddress {
+        10.0.20.10/24
+      }
+    }
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -26,41 +52,31 @@ spec:
         app: keepalived
     spec:
       serviceAccountName: keepalived
-      hostNetwork: true                      # Pod sees host NICs directly
+      hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""   # Run only on control-plane nodes
-      tolerations:         # 🔥 THIS SECTION WAS MISSING
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/not-ready
-        operator: Exists
-        effect: NoExecute
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
       - name: keepalived
         image: osixia/keepalived:2.0.20
         securityContext:
-          privileged: true                    # Required for VRRP + ARP
+          privileged: true
           capabilities:
-            add:
-              - NET_ADMIN
-              - NET_BROADCAST
-              - NET_RAW
-              - SYS_TIME
-        env:
-        - name: KEEPALIVED_INTERFACE
-          value: "eno1"                    # 🔁 Your interface
-        - name: KEEPALIVED_VIRTUAL_IPS
-          value: "10.0.20.10/24"              # 🔁 Your Control Plane VIP
-        - name: KEEPALIVED_ROUTER_ID
-          value: "LVS_KUBERNETES"
-        - name: KEEPALIVED_PASSWORD
-          value: "CP_VipSecret"
-        - name: KEEPALIVED_VIRTUAL_ROUTER_ID
-          value: "51"
-        - name: KEEPALIVED_PRIORITY
-          value: "100"                        # Same on all nodes; highest IP wins
+            add: ["NET_ADMIN","NET_BROADCAST","NET_RAW","SYS_TIME"]
+        command: ["keepalived"]        # <--- run real keepalived
+        args:
+          - "--dont-fork"              # foreground (instead of daemon)
+          - "--log-console"
+          - "--config"
+          - "/etc/keepalived/keepalived.conf"
+        volumeMounts:
+          - name: config
+            mountPath: /etc/keepalived/keepalived.conf
+            subPath: keepalived.conf
         livenessProbe:
           exec:
             command: ["pgrep","keepalived"]
@@ -71,4 +87,7 @@ spec:
             command: ["pgrep","keepalived"]
           initialDelaySeconds: 5
           periodSeconds: 5
-
+      volumes:
+        - name: config
+          configMap:
+            name: keepalived-config
