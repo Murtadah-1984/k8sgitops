@@ -19,7 +19,7 @@ config:
 controller:
   replicaCount: 2
   image:
-    repository: docker.io/bitnami/metallb-controller
+    repository: quay.io/metallb/controller
     tag: "v0.15.2"
   resources:
     limits:
@@ -33,7 +33,7 @@ controller:
 speaker:
   enabled: true
   image:
-    repository: docker.io/bitnami/metallb-speaker
+    repository: quay.io/metallb/speaker
     tag: "v0.15.2"
   resources:
     limits:
