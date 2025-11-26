@@ -20,7 +20,7 @@ controller:
   replicaCount: 2
   image:
     repository: docker.io/bitnami/metallb-controller
-    tag: "0.15.2"
+    tag: "v0.15.2"
   resources:
     limits:
       cpu: 200m
@@ -34,7 +34,7 @@ speaker:
   enabled: true
   image:
     repository: docker.io/bitnami/metallb-speaker
-    tag: "0.15.2"
+    tag: "v0.15.2"
   resources:
     limits:
       cpu: 200m
