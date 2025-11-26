@@ -10,11 +10,10 @@ data:
     }
 
     vrrp_script chk_apiserver {
-      script "/usr/local/bin/check_apiserver.sh"
+      script "curl --silent --max-time 1 https://127.0.0.1:6443/healthz -k | grep -q ok"
       interval 2
-      weight -2
       fall 3
-      rise 2
+      rise 1
     }
 
     vrrp_instance VI_CONTROL_PLANE {
