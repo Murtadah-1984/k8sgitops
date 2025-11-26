@@ -13,7 +13,7 @@ configInline:
         - 10.0.20.100-10.0.20.200  # MetalLB IP pool (excludes control plane IPs 10.0.20.11-13)
       namespaceSelectors:
         - matchLabels:
-            name: kube-system
+            name: metallb-system
 
 # Controller configuration
 controller:
