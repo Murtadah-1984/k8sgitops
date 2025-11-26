@@ -8,7 +8,10 @@ spec:
   source:
     repoURL: https://github.com/Murtadah-1984/k8sgitops.git
     targetRevision: main
-    path: infra/calico
+    path: infra/calico               # folder containing ippool.yaml, installation.yaml, felix.yaml
+    directory:
+      recurse: true
+      include: "{installation.yaml,ippool.yaml,felix.yaml}"   # 🔥 ONLY manage these 3 files
   destination:
     server: https://kubernetes.default.svc
     namespace: calico-system
@@ -16,11 +19,23 @@ spec:
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
       jqPathExpressions:
-        - .metadata.annotations     # prevents size explosion again
+        - .metadata.annotations        # prevents CRD mutation drift loops
+    - group: operator.tigera.io
+      kind: Installation
+      jqPathExpressions:
+        - .status                      # Calico updates status every few seconds
+    - group: crd.projectcalico.org
+      kind: IPPool
+      jqPathExpressions:
+        - .status
+    - group: projectcalico.org
+      kind: FelixConfiguration
+      jqPathExpressions:
+        - .status
   syncPolicy:
-    automated: null    # ❗ disables background auto-sync
     syncOptions:
-      - CreateNamespace=true
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
+      - CreateNamespace=true
+    automated: {}                    # no background auto-sync yet (on purpose)
 

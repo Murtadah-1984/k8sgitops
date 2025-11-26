@@ -1,0 +1,24 @@
+apiVersion: crd.projectcalico.org/v1
+kind: FelixConfiguration
+metadata:
+  name: default
+spec:
+  # IPIP/VXLAN settings (from live manifest)
+  ipipEnabled: true
+  vxlanEnabled: false
+  
+  # IPv6 support (disabled)
+  ipv6Support: false
+  
+  # Endpoint to host action
+  defaultEndpointToHostAction: Accept
+  
+  # Health checks
+  healthEnabled: true
+  
+  # Logging (disabled for kubectl logs)
+  logSeverityFile: Info
+  logSeverityScreen: Info
+  logSeveritySys: Info
+  disableFileLogging: true
+

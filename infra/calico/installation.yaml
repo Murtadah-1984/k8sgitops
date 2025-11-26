@@ -1,0 +1,14 @@
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  variant: Calico
+  calicoNetwork:
+    # IP pools configuration
+    ipPools:
+      - cidr: 192.168.0.0/16     # your pod CIDR
+        encapsulation: IPIP      # or VXLAN
+        natOutgoing: Enabled
+        nodeSelector: all()      # auto applies to all nodes
+
