@@ -45,6 +45,10 @@ speaker:
     registry: quay.io
     repository: metallb/speaker
     tag: "v0.15.2"
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      effect: "NoSchedule"
+      operator: "Exists"
   resources:
     limits:
       cpu: 200m
