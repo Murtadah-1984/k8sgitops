@@ -9,10 +9,11 @@ metadata:
   name: keepalived
   namespace: keepalived
 ---
+# CONFIG #1 — MASTER (k8s-cp-01)
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: keepalived-config
+  name: keepalived-config-cp1
   namespace: keepalived
 data:
   keepalived.conf: |
@@ -24,7 +25,7 @@ data:
       state MASTER
       interface eno1
       virtual_router_id 51
-      priority 100
+      priority 200          # MASTER
       advert_int 1
       authentication {
         auth_type PASS
@@ -35,27 +36,96 @@ data:
       }
     }
 ---
+# CONFIG #2 — BACKUP #1 (k8s-cp-02)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keepalived-config-cp2
+  namespace: keepalived
+data:
+  keepalived.conf: |
+    global_defs {
+      router_id LVS_KUBERNETES
+    }
+
+    vrrp_instance VI_CONTROL_PLANE {
+      state BACKUP
+      interface eno1
+      virtual_router_id 51
+      priority 150          # Backup1
+      advert_int 1
+      authentication {
+        auth_type PASS
+        auth_pass CP_VipSecret
+      }
+      virtual_ipaddress {
+        10.0.20.10/24
+      }
+    }
+---
+# CONFIG #3 — BACKUP #2 (k8s-cp-03)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keepalived-config-cp3
+  namespace: keepalived
+data:
+  keepalived.conf: |
+    global_defs {
+      router_id LVS_KUBERNETES
+    }
+
+    vrrp_instance VI_CONTROL_PLANE {
+      state BACKUP
+      interface eno1
+      virtual_router_id 51
+      priority 100          # Backup2
+      advert_int 1
+      authentication {
+        auth_type PASS
+        auth_pass CP_VipSecret
+      }
+      virtual_ipaddress {
+        10.0.20.10/24
+      }
+    }
+---
+# DaemonSet for CP-01 (MASTER)
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: keepalived
+  name: keepalived-cp1
   namespace: keepalived
   labels:
     app: keepalived
+    node: cp1
 spec:
   selector:
     matchLabels:
       app: keepalived
+      node: cp1
   template:
     metadata:
       labels:
         app: keepalived
+        node: cp1
     spec:
       serviceAccountName: keepalived
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
+      # Target specific node by name (adjust node name as needed)
+      # Alternative: use node labels like kubernetes.io/hostname: k8s-cp-01
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k8s-cp-01
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"
@@ -67,9 +137,9 @@ spec:
           privileged: true
           capabilities:
             add: ["NET_ADMIN","NET_BROADCAST","NET_RAW","SYS_TIME"]
-        command: ["keepalived"]        # <--- run real keepalived
+        command: ["keepalived"]
         args:
-          - "--dont-fork"              # foreground (instead of daemon)
+          - "--dont-fork"
           - "--log-console"
           - "--config"
           - "/etc/keepalived/keepalived.conf"
@@ -90,4 +160,144 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: keepalived-config
+            name: keepalived-config-cp1
+---
+# DaemonSet for CP-02 (BACKUP)
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: keepalived-cp2
+  namespace: keepalived
+  labels:
+    app: keepalived
+    node: cp2
+spec:
+  selector:
+    matchLabels:
+      app: keepalived
+      node: cp2
+  template:
+    metadata:
+      labels:
+        app: keepalived
+        node: cp2
+    spec:
+      serviceAccountName: keepalived
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k8s-cp-02
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+      - name: keepalived
+        image: osixia/keepalived:2.0.20
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN","NET_BROADCAST","NET_RAW","SYS_TIME"]
+        command: ["keepalived"]
+        args:
+          - "--dont-fork"
+          - "--log-console"
+          - "--config"
+          - "/etc/keepalived/keepalived.conf"
+        volumeMounts:
+          - name: config
+            mountPath: /etc/keepalived/keepalived.conf
+            subPath: keepalived.conf
+        livenessProbe:
+          exec:
+            command: ["pgrep","keepalived"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ["pgrep","keepalived"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: keepalived-config-cp2
+---
+# DaemonSet for CP-03 (BACKUP)
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: keepalived-cp3
+  namespace: keepalived
+  labels:
+    app: keepalived
+    node: cp3
+spec:
+  selector:
+    matchLabels:
+      app: keepalived
+      node: cp3
+  template:
+    metadata:
+      labels:
+        app: keepalived
+        node: cp3
+    spec:
+      serviceAccountName: keepalived
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k8s-cp-03
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+      - name: keepalived
+        image: osixia/keepalived:2.0.20
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN","NET_BROADCAST","NET_RAW","SYS_TIME"]
+        command: ["keepalived"]
+        args:
+          - "--dont-fork"
+          - "--log-console"
+          - "--config"
+          - "/etc/keepalived/keepalived.conf"
+        volumeMounts:
+          - name: config
+            mountPath: /etc/keepalived/keepalived.conf
+            subPath: keepalived.conf
+        livenessProbe:
+          exec:
+            command: ["pgrep","keepalived"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ["pgrep","keepalived"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: keepalived-config-cp3
