@@ -30,6 +30,13 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""   # Run only on control-plane nodes
+      tolerations:         # 🔥 THIS SECTION WAS MISSING
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoExecute
       containers:
       - name: keepalived
         image: osixia/keepalived:2.0.20
