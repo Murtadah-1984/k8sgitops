@@ -24,7 +24,8 @@ config:
 controller:
   replicaCount: 2
   image:
-    repository: quay.io/metallb/controller
+    registry: quay.io
+    repository: metallb/controller
     tag: "v0.15.2"
   resources:
     limits:
@@ -38,7 +39,8 @@ controller:
 speaker:
   enabled: true
   image:
-    repository: quay.io/metallb/speaker
+    registry: quay.io
+    repository: metallb/speaker
     tag: "v0.15.2"
   resources:
     limits:
