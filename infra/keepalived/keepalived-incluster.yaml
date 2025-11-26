@@ -51,7 +51,7 @@ spec:
         args: ["--dont-daemonize"]   # 🔥 KEY FIX FOR CRASHLOOP
         env:
         - name: KEEPALIVED_INTERFACE
-          value: "eno1.20"                    # 🔁 Your VLAN 20 interface
+          value: "eno1"                    # 🔁 Your interface
         - name: KEEPALIVED_VIRTUAL_IPS
           value: "10.0.20.10/24"              # 🔁 Your Control Plane VIP
         - name: KEEPALIVED_ROUTER_ID
