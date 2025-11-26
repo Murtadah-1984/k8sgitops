@@ -1,0 +1,26 @@
+# Calico CNI Configuration
+# Production configuration with VXLAN encapsulation
+
+installation:
+  enabled: true
+  kubernetesProvider: "kubeadm"
+  calicoNetwork:
+    bgp: Disabled
+    ipPools:
+      - cidr: 192.168.0.0/16
+        encapsulation: VXLAN
+        natOutgoing: Enabled
+        nodeSelector: all()
+  ipam:
+    type: Calico
+
+# VXLAN MTU
+felixConfiguration:
+  ipipEnabled: false
+  vxlanEnabled: true
+  vxlanMTU: 1400
+
+typha:
+  enabled: true
+  replicas: 3
+
