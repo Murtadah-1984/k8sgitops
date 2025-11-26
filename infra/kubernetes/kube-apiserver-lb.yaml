@@ -4,7 +4,7 @@ metadata:
   name: kube-apiserver-lb
   namespace: kube-system
   annotations:
-    metallb.universe.tf/address-pool: control-plane-pool
+    metallb.universe.tf/address-pool: services-pool
 spec:
   type: LoadBalancer
   loadBalancerIP: 10.0.20.250  # Control plane VIP (managed by keepalived)

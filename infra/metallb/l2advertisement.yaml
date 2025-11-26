@@ -6,5 +6,6 @@ metadata:
 spec:
   ipAddressPools:
     - control-plane-pool
+    - services-pool
 
 
