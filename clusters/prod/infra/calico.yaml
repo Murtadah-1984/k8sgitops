@@ -12,6 +12,7 @@ spec:
     directory:
       recurse: true
       include: "{installation.yaml,ippool.yaml,felix.yaml}"   # 🔥 ONLY manage these 3 files
+      exclude: "{crds.yaml,crd/**,crds/**}"                    # prevent syncing CRDs entirely
   destination:
     server: https://kubernetes.default.svc
     namespace: calico-system
@@ -24,10 +25,6 @@ spec:
       namespace: calico-system
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
-    - group: apiextensions.k8s.io
-      kind: CustomResourceDefinition
-      jqPathExpressions:
-        - .metadata.annotations        # prevents CRD mutation drift loops
     - group: operator.tigera.io
       kind: Installation
       jqPathExpressions:
