@@ -17,7 +17,7 @@ spec:
       ref: values
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: calico-system
   syncPolicy:
     automated: null    # ❗ disables background auto-sync
     syncOptions:
