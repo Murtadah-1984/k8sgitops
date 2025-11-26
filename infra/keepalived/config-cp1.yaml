@@ -10,7 +10,7 @@ data:
     }
 
     vrrp_script chk_apiserver {
-      script "/usr/local/bin/check_apiserver.sh"
+      script "/bin/sh -c 'curl -k -f https://localhost:6443/healthz || exit 1'"
       interval 2
       weight -2
       fall 3

@@ -52,10 +52,6 @@ spec:
           - name: config
             mountPath: /etc/keepalived/keepalived.conf
             subPath: keepalived.conf
-          - name: scripts
-            mountPath: /usr/local/bin/check_apiserver.sh
-            subPath: check_apiserver.sh
-            readOnly: true
         livenessProbe:
           exec:
             command: ["pgrep","keepalived"]
@@ -70,8 +66,4 @@ spec:
         - name: config
           configMap:
             name: keepalived-config-cp3
-        - name: scripts
-          configMap:
-            name: keepalived-scripts
-            defaultMode: 0755
 
