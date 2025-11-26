@@ -2,7 +2,6 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: control-plane-pool
-  namespace: metallb-system
 spec:
   addresses:
     - 10.0.20.100-10.0.20.200  # MetalLB IP pool (excludes control plane IPs 10.0.20.11-13)
