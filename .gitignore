@@ -33,7 +33,7 @@ clusters/prod/*
 !clusters/prod/argocd-root.yaml
 !clusters/prod/infra/
 clusters/prod/infra/*
-!clusters/prod/infra/ceph*.yaml
+!clusters/prod/infra/ceph.yaml
 !clusters/prod/infra/keepalived.yaml
 !clusters/prod/infra/metallb.yaml
 !clusters/prod/infra/kube-apiserver-lb.yaml
@@ -50,6 +50,7 @@ infra/kubernetes/**
 !infra/namespaces/
 infra/namespaces/**
 
-# Ignore Calico
+# Ignore Calico and ceph-cluster.yaml
 **/calico/
 **/calico.yaml
+**/ceph-cluster.yaml
