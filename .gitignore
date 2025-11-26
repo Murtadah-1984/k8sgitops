@@ -40,3 +40,5 @@ Thumbs.db
 /clusters/prod/apps/platform*.yaml
 /clusters/prod/apps/business/**
 /clusters/prod/apps/platform/**
+/infra/keepalived/
+/clusters/prod/infra/keepalived*.yaml
