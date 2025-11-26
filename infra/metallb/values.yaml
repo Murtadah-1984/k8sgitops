@@ -1,30 +1,30 @@
 # MetalLB LoadBalancer Configuration
-# Bitnami Helm Chart Values
+# Bitnami Helm Chart Values - L2 Mode
 
 # IP Address Pool Configuration
 # Control Plane IPs: 10.0.20.11, 10.0.20.12, 10.0.20.13
 # Control Plane VIP: 10.0.20.10 (managed by keepalived)
 # MetalLB pool avoids control plane IPs
-configInline:
-  address-pools:
-    - name: control-plane-pool
-      protocol: layer2
-      addresses:
-        - 10.0.20.100-10.0.20.200  # MetalLB IP pool (excludes control plane IPs 10.0.20.11-13)
-      namespaceSelectors:
-        - matchLabels:
-            name: metallb-system
+
+# -------------------------------------------------------------------
+# MetalLB L2 Mode - Corrected Bitnami Helm Values
+# -------------------------------------------------------------------
+
+# IP Address Pool - assigns LoadBalancer IPs
+# Note: Address pools are managed via CRDs (IPAddressPool), not configInline
+config:
+  enabled: false  # important since we are using CRDs, not configInline
 
 # Controller configuration
 controller:
   replicaCount: 2
   image:
-    repository: ghcr.io/bitnami/metallb-speaker
+    repository: ghcr.io/bitnami/metallb-controller
     tag: "0.15.2"
   resources:
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 200m
+      memory: 200Mi
     requests:
       cpu: 100m
       memory: 100Mi
@@ -33,13 +33,12 @@ controller:
 speaker:
   enabled: true
   image:
-    repository: ghcr.io/bitnami/metallb-controller
+    repository: ghcr.io/bitnami/metallb-speaker
     tag: "0.15.2"
   resources:
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 200m
+      memory: 200Mi
     requests:
       cpu: 100m
       memory: 100Mi
-
