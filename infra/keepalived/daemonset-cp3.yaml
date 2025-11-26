@@ -44,10 +44,10 @@ spec:
             add: ["NET_ADMIN","NET_BROADCAST","NET_RAW","SYS_TIME"]
         command: ["keepalived"]
         args:
+          - "-f"
+          - "/etc/keepalived/keepalived.conf"
           - "--dont-fork"
           - "--log-console"
-          - "--config"
-          - "/etc/keepalived/keepalived.conf"
         volumeMounts:
           - name: config
             mountPath: /etc/keepalived/keepalived.conf
