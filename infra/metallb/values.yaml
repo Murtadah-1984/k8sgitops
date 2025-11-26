@@ -27,6 +27,9 @@ controller:
     registry: quay.io
     repository: metallb/controller
     tag: "v0.15.2"
+  namespaceSelectors:
+    - matchLabels:
+        name: metallb-system
   resources:
     limits:
       cpu: 200m

@@ -6,7 +6,5 @@ metadata:
 spec:
   ipAddressPools:
     - control-plane-pool
-  namespaceSelectors:
-    - matchLabels:
-        name: metallb-system
+
 
