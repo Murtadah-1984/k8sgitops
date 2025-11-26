@@ -20,7 +20,7 @@ configInline:
 controller:
   replicaCount: 2
   image:
-    repository: bitnami/metallb-controller
+    repository: ghcr.io/bitnami/metallb-speaker
     tag: "0.15.2"
   resources:
     limits:
@@ -34,7 +34,7 @@ controller:
 speaker:
   enabled: true
   image:
-    repository: bitnami/metallb-speaker
+    repository: ghcr.io/bitnami/metallb-controller
     tag: "0.15.2"
   resources:
     limits:
