@@ -2,7 +2,7 @@
 # Comprehensive configuration matching calico.yaml
 # All values extracted from rendered calico.yaml for full control
 
-# Installation configuration
+# Installation configuration (operator.tigera.io/v1 Installation CRD)
 installation:
   enabled: true
   kubernetesProvider: "kubeadm"
@@ -10,34 +10,13 @@ installation:
   # Calico networking configuration
   calicoNetwork:
     # BGP configuration
-    bgp: Enabled
+    bgp: Disabled
     # IP pools configuration
     ipPools:
-      - cidr: 192.168.0.0/16
-        encapsulation: IPIP
+      - cidr: 192.168.0.0/16  # your pod CIDR
+        encapsulation: IPIP   # or VXLAN if modified
         natOutgoing: Enabled
         nodeSelector: all()
-        # IPIP mode: Always (from CALICO_IPV4POOL_IPIP: "Always")
-        ipipMode: Always
-        # VXLAN disabled (from CALICO_IPV4POOL_VXLAN: "Never")
-        vxlanMode: Never
-    
-    # MTU configuration (auto-detected, veth_mtu: "0" in calico.yaml)
-    mtu: 0
-    
-    # Node address autodetection
-    nodeAddressAutodetectionV4:
-      firstFound: true
-  
-  # IPAM configuration
-  ipam:
-    type: Calico
-  
-  # CNI configuration
-  cni:
-    type: Calico
-    ipam:
-      type: Calico
 
 # Typha configuration (disabled in calico.yaml)
 typha:
