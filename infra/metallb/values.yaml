@@ -10,6 +10,11 @@
 # MetalLB L2 Mode - Corrected Bitnami Helm Values
 # -------------------------------------------------------------------
 
+# Global configuration
+global:
+  security:
+    allowInsecureImages: true
+
 # IP Address Pool - assigns LoadBalancer IPs
 # Note: Address pools are managed via CRDs (IPAddressPool), not configInline
 config:
