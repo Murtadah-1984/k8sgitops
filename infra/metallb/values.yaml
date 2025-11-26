@@ -19,6 +19,9 @@ configInline:
 # Controller configuration
 controller:
   replicaCount: 2
+  image:
+    repository: bitnami/metallb-controller
+    tag: "0.15.2"
   resources:
     limits:
       cpu: 100m
@@ -30,6 +33,9 @@ controller:
 # Speaker configuration
 speaker:
   enabled: true
+  image:
+    repository: bitnami/metallb-speaker
+    tag: "0.15.2"
   resources:
     limits:
       cpu: 100m
