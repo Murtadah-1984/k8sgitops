@@ -15,7 +15,6 @@ Thumbs.db
 **/*credential*.yaml
 **/*password*.yaml
 **/*key*.yaml
-!**/node-pools/*.yaml
 
 # Temporary files
 *.tmp
@@ -24,33 +23,8 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
-# Ignore everything except argocd-root.yaml and ceph
+# Ignore everything except Calico
 *
-!clusters/
-clusters/*
-!clusters/prod/
-clusters/prod/*
-!clusters/prod/argocd-root.yaml
-!clusters/prod/infra/
-clusters/prod/infra/*
-!clusters/prod/infra/ceph.yaml
-!clusters/prod/infra/keepalived.yaml
-!clusters/prod/infra/metallb.yaml
-!clusters/prod/infra/kube-apiserver-lb.yaml
-!infra/
-infra/*
-!infra/ceph/
-infra/ceph/**
-!infra/keepalived/
-infra/keepalived/**
-!infra/metallb/
-infra/metallb/**
-!infra/kubernetes/
-infra/kubernetes/**
-!infra/namespaces/
-infra/namespaces/**
-
-# Ignore Calico and ceph-cluster.yaml
-**/calico/
-**/calico.yaml
-**/ceph-cluster.yaml
+!.gitignore
+!**/calico/
+!**/calico.yaml
