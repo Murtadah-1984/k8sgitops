@@ -30,6 +30,7 @@ Thumbs.db
 !**/calico.yaml
 
 /clusters/prod/infra/ceph*.yaml
+/infra/ceph/
 /clusters/prod/infra/kong*.yaml
 /clusters/prod/infra/vault*.yaml
 /clusters/prod/infra/external-secrets*.yaml
