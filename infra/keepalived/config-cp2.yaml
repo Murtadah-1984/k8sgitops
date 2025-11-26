@@ -23,6 +23,7 @@ data:
       virtual_router_id 51
       priority 150          # Backup1
       advert_int 1
+      nopreempt              # prevents fighting if master returns (optional)
       authentication {
         auth_type PASS
         auth_pass CP_VipSecret
