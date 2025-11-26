@@ -28,3 +28,14 @@ Thumbs.db
 !.gitignore
 !**/calico/
 !**/calico.yaml
+
+/clusters/prod/infra/ceph*.yaml
+/clusters/prod/infra/kong*.yaml
+/clusters/prod/infra/vault*.yaml
+/clusters/prod/infra/external-secrets*.yaml
+/clusters/prod/infra/namespaces*.yaml
+/clusters/prod/infra/node-pools*.yaml
+/clusters/prod/apps/business*.yaml
+/clusters/prod/apps/platform*.yaml
+/clusters/prod/apps/business/**
+/clusters/prod/apps/platform/**
