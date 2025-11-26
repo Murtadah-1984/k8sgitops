@@ -48,7 +48,6 @@ spec:
               - NET_BROADCAST
               - NET_RAW
               - SYS_TIME
-        args: ["--dont-daemonize"]   # 🔥 KEY FIX FOR CRASHLOOP
         env:
         - name: KEEPALIVED_INTERFACE
           value: "eno1"                    # 🔁 Your interface
