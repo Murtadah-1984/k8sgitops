@@ -17,11 +17,11 @@ spec:
       ref: values
   destination:
     server: https://kubernetes.default.svc
-    namespace: calico-system
+    namespace: kube-system
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    automated: null    # ❗ disables background auto-sync
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
 

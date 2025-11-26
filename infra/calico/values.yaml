@@ -1,26 +1,296 @@
 # Calico CNI Configuration
-# Production configuration with VXLAN encapsulation
+# Comprehensive configuration matching calico.yaml
+# All values extracted from rendered calico.yaml for full control
 
+# Installation configuration
 installation:
   enabled: true
   kubernetesProvider: "kubeadm"
+  
+  # Calico networking configuration
   calicoNetwork:
-    bgp: Disabled
+    # BGP configuration
+    bgp: Enabled
+    # IP pools configuration
     ipPools:
       - cidr: 192.168.0.0/16
-        encapsulation: VXLAN
+        encapsulation: IPIP
         natOutgoing: Enabled
         nodeSelector: all()
+        # IPIP mode: Always (from CALICO_IPV4POOL_IPIP: "Always")
+        ipipMode: Always
+        # VXLAN disabled (from CALICO_IPV4POOL_VXLAN: "Never")
+        vxlanMode: Never
+    
+    # MTU configuration (auto-detected, veth_mtu: "0" in calico.yaml)
+    mtu: 0
+    
+    # Node address autodetection
+    nodeAddressAutodetectionV4:
+      firstFound: true
+  
+  # IPAM configuration
   ipam:
     type: Calico
+  
+  # CNI configuration
+  cni:
+    type: Calico
+    ipam:
+      type: Calico
 
-# VXLAN MTU
-felixConfiguration:
-  ipipEnabled: false
-  vxlanEnabled: true
-  vxlanMTU: 1400
-
+# Typha configuration (disabled in calico.yaml)
 typha:
-  enabled: true
-  replicas: 3
+  enabled: false
+  replicas: 0
 
+# Felix configuration (from calico-node environment variables)
+felixConfiguration:
+  # IPIP/VXLAN settings
+  ipipEnabled: true
+  vxlanEnabled: false
+  ipipMTU: 0  # Auto-detected from veth_mtu
+  vxlanMTU: 0  # Auto-detected from veth_mtu
+  wireguardMTU: 0  # Auto-detected from veth_mtu
+  
+  # IPv6 support (disabled)
+  ipv6Support: false
+  
+  # Endpoint to host action
+  defaultEndpointToHostAction: Accept
+  
+  # Health checks
+  healthEnabled: true
+  
+  # File logging (disabled for kubectl logs)
+  logSeverityFile: Info
+  logSeverityScreen: Info
+  logSeveritySys: Info
+  disableFileLogging: true
+  
+  # Dataplane driver
+  dataplaneDriver: Iptables
+  
+  # Cluster type
+  clusterType: "k8s,bgp"
+
+# Calico node configuration (DaemonSet settings)
+calicoNode:
+  # Image configuration
+  image: docker.io/calico/node
+  imageTag: v3.28.0
+  imagePullPolicy: IfNotPresent
+  
+  # CNI image configuration
+  cniImage: docker.io/calico/cni
+  cniImageTag: v3.28.0
+  
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+  
+  # Environment variables (mapped from calico-node container)
+  env:
+    # Datastore configuration
+    - name: DATASTORE_TYPE
+      value: "kubernetes"
+    - name: WAIT_FOR_DATASTORE
+      value: "true"
+    
+    # Networking backend
+    - name: CALICO_NETWORKING_BACKEND
+      value: "bird"
+    
+    # Cluster type
+    - name: CLUSTER_TYPE
+      value: "k8s,bgp"
+    
+    # IP address autodetection
+    - name: IP
+      value: "autodetect"
+    
+    # IP pool configuration
+    - name: CALICO_IPV4POOL_IPIP
+      value: "Always"
+    - name: CALICO_IPV4POOL_VXLAN
+      value: "Never"
+    - name: CALICO_IPV6POOL_VXLAN
+      value: "Never"
+    
+    # Logging
+    - name: CALICO_DISABLE_FILE_LOGGING
+      value: "true"
+    
+    # Felix settings
+    - name: FELIX_DEFAULTENDPOINTTOHOSTACTION
+      value: "ACCEPT"
+    - name: FELIX_IPV6SUPPORT
+      value: "false"
+    - name: FELIX_HEALTHENABLED
+      value: "true"
+  
+  # Security context
+  securityContext:
+    privileged: true
+  
+  # Lifecycle hooks
+  lifecycle:
+    preStop:
+      exec:
+        command:
+          - /bin/calico-node
+          - -shutdown
+  
+  # Liveness probe
+  livenessProbe:
+    exec:
+      command:
+        - /bin/calico-node
+        - -felix-live
+        - -bird-live
+    periodSeconds: 10
+    initialDelaySeconds: 10
+    failureThreshold: 6
+    timeoutSeconds: 10
+  
+  # Readiness probe
+  readinessProbe:
+    exec:
+      command:
+        - /bin/calico-node
+        - -felix-ready
+        - -bird-ready
+    periodSeconds: 10
+    timeoutSeconds: 10
+  
+  # Update strategy
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  
+  # Pod configuration
+  terminationGracePeriodSeconds: 0
+  priorityClassName: system-node-critical
+  hostNetwork: true
+  
+  # Node selector
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  # Tolerations
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+
+# Calico kube-controllers configuration
+kubeControllers:
+  # Image configuration
+  image: docker.io/calico/kube-controllers
+  imageTag: v3.28.0
+  imagePullPolicy: IfNotPresent
+  
+  # Replicas
+  replicas: 1
+  
+  # Strategy
+  strategy:
+    type: Recreate
+  
+  # Environment variables
+  env:
+    - name: ENABLED_CONTROLLERS
+      value: node
+    - name: DATASTORE_TYPE
+      value: kubernetes
+  
+  # Liveness probe
+  livenessProbe:
+    exec:
+      command:
+        - /usr/bin/check-status
+        - -l
+    periodSeconds: 10
+    initialDelaySeconds: 10
+    failureThreshold: 6
+    timeoutSeconds: 10
+  
+  # Readiness probe
+  readinessProbe:
+    exec:
+      command:
+        - /usr/bin/check-status
+        - -r
+    periodSeconds: 10
+  
+  # Node selector
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  # Tolerations
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+  
+  # Priority class
+  priorityClassName: system-cluster-critical
+
+# CNI configuration
+cni:
+  # CNI config name
+  configName: "10-calico.conflist"
+  
+  # CNI network config (from calico-config ConfigMap)
+  networkConfig: |
+    {
+      "name": "k8s-pod-network",
+      "cniVersion": "0.3.1",
+      "plugins": [
+        {
+          "type": "calico",
+          "log_level": "info",
+          "log_file_path": "/var/log/calico/cni/cni.log",
+          "datastore_type": "kubernetes",
+          "nodename": "__KUBERNETES_NODE_NAME__",
+          "mtu": __CNI_MTU__,
+          "ipam": {
+              "type": "calico-ipam"
+          },
+          "policy": {
+              "type": "k8s"
+          },
+          "kubernetes": {
+              "kubeconfig": "__KUBECONFIG_FILEPATH__"
+          }
+        },
+        {
+          "type": "portmap",
+          "snat": true,
+          "capabilities": {"portMappings": true}
+        },
+        {
+          "type": "bandwidth",
+          "capabilities": {"bandwidth": true}
+        }
+      ]
+    }
+
+# ConfigMap settings (from calico-config)
+config:
+  # Typha service name
+  typha_service_name: "none"
+  
+  # Calico backend
+  calico_backend: "bird"
+  
+  # Veth MTU (auto-detected)
+  veth_mtu: "0"
