@@ -34,6 +34,9 @@ Thumbs.db
 /infra/calico/*.tmp
 /infra/calico/calico.yaml
 /infra/calico/values.yaml
+/infra/calico/*.log
+/infra/calico/cache/
+/infra/calico/tmp/
 
 /clusters/prod/infra/ceph*.yaml
 /infra/ceph/
