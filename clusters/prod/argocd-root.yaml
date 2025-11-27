@@ -2,22 +2,24 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: root-app
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
   namespace: argocd
 spec:
-  project: default
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
   source:
+    path: clusters/prod
     repoURL: https://github.com/Murtadah-1984/k8sgitops.git
     targetRevision: main
-    path: clusters/prod
-    directory:
-      recurse: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
+  sources: []
+  project: default
   syncPolicy:
     automated:
-      selfHeal: true
       prune: true
+      selfHeal: true
+      enabled: true
     syncOptions:
       - CreateNamespace=true
-
+      - PrunePropagationPolicy=background
