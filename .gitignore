@@ -29,6 +29,12 @@ Thumbs.db
 !**/calico/
 !**/calico.yaml
 
+# Calico - ignore runtime state files (keep CRDs only)
+/infra/calico/*.yaml.bak
+/infra/calico/*.tmp
+/infra/calico/calico.yaml
+/infra/calico/values.yaml
+
 /clusters/prod/infra/ceph*.yaml
 /infra/ceph/
 /clusters/prod/infra/kong*.yaml

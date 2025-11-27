@@ -2,13 +2,24 @@ apiVersion: operator.tigera.io/v1
 kind: Installation
 metadata:
   name: default
+  namespace: tigera-operator
 spec:
   variant: Calico
   calicoNetwork:
-    # IP pools configuration
+    bgp: Enabled
     ipPools:
-      - cidr: 192.168.0.0/16     # your pod CIDR
-        encapsulation: IPIP      # or VXLAN
+      - cidr: 192.168.0.0/16
+        encapsulation: IPIP
         natOutgoing: Enabled
-        nodeSelector: all()      # auto applies to all nodes
-
+        nodeSelector: "node-role.kubernetes.io/control-plane!=true"  # workers only
+    # autodetect IP from host interfaces (correct position)
+    nodeAddressAutodetectionV4:
+      firstFound: true
+  cni:
+    type: Calico
+    ipam:
+      type: Calico
+  controlPlaneReplicas: 1   # because you're no longer scheduling on control-plane
+  nodeUpdateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
