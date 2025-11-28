@@ -22,8 +22,6 @@ cephCluster:
         enabled: false
       - name: restful
         enabled: false
-  rbdMirroring:
-    enabled: false
   network:
     provider: host
     selectors:
