@@ -15,6 +15,11 @@ spec:
   destination:
     namespace: rook-ceph
     server: https://kubernetes.default.svc
+  ignoreDifferences:
+    - group: ceph.rook.io
+      kind: CephFilesystem
+      jsonPointers:
+        - /spec/dataPools
   syncPolicy:
     automated:
       selfHeal: true
