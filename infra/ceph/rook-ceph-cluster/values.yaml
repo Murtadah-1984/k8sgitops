@@ -144,7 +144,11 @@ cephFilesystems:
       reclaimPolicy: Delete
       allowVolumeExpansion: true
       volumeBindingMode: Immediate
-      parameters: {}
+      parameters:
+        clusterID: rook-ceph
+        fsName: myfs
+        pool: myfs-data0
+        csi.storage.k8s.io/fstype: ext4
 
 toolbox:
   enabled: true
