@@ -9,10 +9,6 @@ cephCluster:
   mon:
     count: 3
     allowMultiplePerNode: false
-    nodes:
-      - name: k8s-ceph-mon-01
-      - name: k8s-ceph-02
-      - name: k8s-ceph-03
   mgr:
     count: 1
     # Disable expensive MGR modules to save ~1.5GB RAM
@@ -94,23 +90,7 @@ cephCluster:
       nodes:
       - name: k8s-ceph-02
       - name: k8s-ceph-03
-    mon:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: ceph-mon
-              operator: In
-              values:
-              - enabled
-      nodes:
-      - name: k8s-ceph-mon-01
-      - name: k8s-ceph-02
-      - name: k8s-ceph-03
-      tolerations:
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-          effect: "NoSchedule"
+    mon: {}
 blockPools:
   - name: replicapool
     spec:
