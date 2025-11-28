@@ -23,32 +23,12 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
-# Ignore everything except Calico
+# Ignore everything except Ceph
 *
 !.gitignore
-!**/calico/
-!**/calico.yaml
+!**/ceph/
+!**/ceph*.yaml
+!clusters/**/ceph*.yaml
 
-# Calico - ignore runtime state files (keep CRDs only)
-/infra/calico/*.yaml.bak
-/infra/calico/*.tmp
-/infra/calico/calico.yaml
-/infra/calico/values.yaml
-/infra/calico/*.log
-/infra/calico/cache/
-/infra/calico/tmp/
-
+# Explicitly ignore calico.yaml
 /clusters/prod/infra/calico.yaml
-/clusters/prod/infra/ceph*.yaml
-/infra/ceph/
-/clusters/prod/infra/kong*.yaml
-/clusters/prod/infra/vault*.yaml
-/clusters/prod/infra/external-secrets*.yaml
-/clusters/prod/infra/namespaces*.yaml
-/clusters/prod/infra/node-pools*.yaml
-/clusters/prod/apps/business*.yaml
-/clusters/prod/apps/platform*.yaml
-/clusters/prod/apps/business/**
-/clusters/prod/apps/platform/**
-/infra/keepalived/
-/clusters/prod/infra/keepalived*.yaml
