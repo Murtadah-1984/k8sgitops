@@ -90,7 +90,15 @@ cephCluster:
       nodes:
       - name: k8s-ceph-02
       - name: k8s-ceph-03
-    mon: {}
+    mon:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: ceph-mon
+              operator: In
+              values:
+              - enabled
 blockPools:
   - name: replicapool
     spec:
