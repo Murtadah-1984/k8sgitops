@@ -31,6 +31,9 @@ Thumbs.db
 !**/ceph*.yaml
 !clusters/**/ceph*.yaml
 !clusters/prod/argocd-root.yaml
+!clusters/**/vault*.yaml
+!infra/vault/
+!infra/vault/**
 
 # Explicitly ignore calico.yaml
 /clusters/prod/infra/calico.yaml
