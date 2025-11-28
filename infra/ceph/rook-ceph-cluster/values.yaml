@@ -24,17 +24,6 @@ cephCluster:
         enabled: false
   rbdMirroring:
     enabled: false
-  config:
-    global:
-      mon_data_avail_warn: "5"
-      mon_osd_down_out_subtree_limit: "host"
-      mon_osd_min_down_reporter: "1"
-      mon_clock_drift_allowed: "2"
-    osd:
-      osd_memory_target: "2G"
-      osd_memory_base: "1G"
-      osd_memory_cache_min: "128M"
-      bluestore_cache_size: "512M"
   network:
     provider: host
     selectors:
@@ -87,9 +76,6 @@ cephCluster:
               operator: In
               values:
               - enabled
-      nodes:
-      - name: k8s-ceph-02
-      - name: k8s-ceph-03
     mon:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
