@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: "https://charts.bitnami.com/bitnami"
+      chart: vault
+      targetRevision: "1.9.0"
+      helm:
+        valueFiles:
+          - $values/infra/vault/values.yaml
+    - repoURL: https://github.com/Murtadah-1984/k8sgitops.git
+      targetRevision: main
+      ref: values
+  destination:
+    namespace: vault
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
