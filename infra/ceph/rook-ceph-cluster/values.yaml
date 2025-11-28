@@ -112,7 +112,7 @@ cephFilesystems:
         replicated:
           size: 2
       dataPools:
-        - name: myfs-data0
+        - name: data0
           replicated:
             size: 2
       preserveFilesystemOnDelete: true
@@ -131,7 +131,7 @@ cephFilesystems:
       parameters:
         clusterID: rook-ceph
         fsName: myfs
-        pool: myfs-data0
+        pool: data0
         csi.storage.k8s.io/fstype: ext4
 
 toolbox:
