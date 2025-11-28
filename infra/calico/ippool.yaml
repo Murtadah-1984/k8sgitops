@@ -4,8 +4,11 @@ metadata:
   name: default-pool
 spec:
   cidr: 192.168.0.0/16
-  ipipMode: Always      # if using IPIP
-  vxlanMode: Never      # set based on your choice
+  veth_mtu: 1400
+  encapsulation: vxlan
+  vxlanMode: Always      # set based on your choice
   natOutgoing: true
-  nodeSelector: all()
-
+  ipipMode: Never  
+  nodeSelector: "node-role.kubernetes.io/control-plane!=true"
+  nodeAddressAutodetectionV4:
+      firstFound: true

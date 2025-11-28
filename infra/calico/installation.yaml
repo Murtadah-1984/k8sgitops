@@ -6,15 +6,8 @@ metadata:
 spec:
   variant: Calico
   calicoNetwork:
-    bgp: Enabled
-    ipPools:
-      - cidr: 192.168.0.0/16
-        encapsulation: IPIP
-        natOutgoing: Enabled
-        nodeSelector: "node-role.kubernetes.io/control-plane!=true"  # workers only
-    # autodetect IP from host interfaces (correct position)
-    nodeAddressAutodetectionV4:
-      firstFound: true
+    bgp: Disabled
+     
   cni:
     type: Calico
     ipam:

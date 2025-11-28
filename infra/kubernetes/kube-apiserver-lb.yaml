@@ -4,10 +4,10 @@ metadata:
   name: kube-apiserver-lb
   namespace: kube-system
   annotations:
-    metallb.universe.tf/address-pool: services-pool
+    metallb.universe.tf/address-pool: lb-pool
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.0.20.250  # Control plane VIP (managed by keepalived)
+  loadBalancerIP: 10.0.20.10  # Control plane VIP (managed by keepalived)
   ports:
     - port: 6443
       targetPort: 6443
@@ -15,4 +15,6 @@ spec:
       name: apiserver
   selector:
     component: kube-apiserver
+
+
 
