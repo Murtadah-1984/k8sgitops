@@ -10,6 +10,7 @@ spec:
       chart: vault
       targetRevision: "1.9.0"
       helm:
+        passCredentials: true
         valueFiles:
           - $values/infra/vault/values.yaml
     - repoURL: https://github.com/Murtadah-1984/k8sgitops.git
