@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     - repoURL: "https://charts.bitnami.com/bitnami"
-      chart: vault
+      chart: bitnami/vault
       targetRevision: "1.9.0"
       helm:
         valueFiles:
