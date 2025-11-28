@@ -3,6 +3,8 @@
 
 global:
   storageClass: "rook-ceph-block"
+  imagePullSecrets:
+    - name: dockerhub-cred
 
 tls:
   enabled: false
