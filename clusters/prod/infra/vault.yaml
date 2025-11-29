@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: "oci://registry-1.docker.io/bitnamicharts"
+    - repoURL: bitnami-oci
       chart: vault
       targetRevision: "1.9.0"
       helm:
