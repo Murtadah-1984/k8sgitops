@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: oci://registry-1.docker.io/bitnamicharts
-      chart: vault
+    - repoURL: oci://registry-1.docker.io
+      chart: bitnamicharts/vault
       targetRevision: "1.9.0"
       helm:
         passCredentials: true
