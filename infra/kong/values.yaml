@@ -1,0 +1,70 @@
+# Bitnami Kong Gateway Helm Values
+# Production configuration with HAProxy and dedicated nodes
+
+replicaCount: 3
+
+image:
+  debug: false
+
+# -------------------------------------
+# EXTERNAL LB = HAProxy
+# No MetalLB, no external IP assignment here
+# -------------------------------------
+service:
+  type: NodePort                     # HAProxy will forward to this
+  ports:
+    http: 80
+    https: 443
+  targetPorts:
+    http: 8000
+    https: 8443
+  nodePorts:                         # Optionally define ports manually
+    http: 30080                      # Your HAProxy -> NodePort -> Kong
+    https: 30443                     # optional, if using TLS passthrough
+
+ingressController:
+  enabled: false                     # Using Kong as API Gateway manually w/ routes
+
+proxy:
+  enabled: true
+
+# -------------------------------------
+# Database Connectivity
+# -------------------------------------
+env:
+  database: "postgres"
+  trusted_ips: 0.0.0.0/0
+  real_ip_header: "X-Forwarded-For"
+
+postgresql:
+  enabled: true
+
+# -------------------------------------
+# Kong resources
+# -------------------------------------
+resources:
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+  requests:
+    cpu: "1"
+    memory: "2Gi"
+
+# -------------------------------------
+# Node placement (your Kong dedicated nodes)
+# -------------------------------------
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kong
+              operator: In
+              values:
+                - "true"
+
+tolerations:
+  - key: "node-role.kong"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
