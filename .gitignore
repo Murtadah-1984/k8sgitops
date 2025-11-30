@@ -23,22 +23,14 @@ Thumbs.db
 # ArgoCD
 .argocd/
 
-# Ignore everything except Ceph
+# Ignore everything except tracked directories
 *
 !.gitignore
-!infra/ceph/
-!infra/ceph/**
-!**/ceph*.yaml
-!clusters/**/ceph*.yaml
 !clusters/prod/argocd-root.yaml
-!clusters/**/vault*.yaml
-!infra/vault/
-!infra/vault/**
-!clusters/**/apps/
-!clusters/**/apps/**
-!clusters/**/*.yaml
+!clusters/**/
+!clusters/**
 !infra/**/
-!infra/**/*.yaml
+!infra/**
 
 # Explicitly ignore calico.yaml
 /clusters/prod/infra/calico.yaml
