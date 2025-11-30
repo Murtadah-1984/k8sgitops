@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mysql-tools
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: phpmyadmin
+      targetRevision: "15.0.0"
+      helm:
+        valueFiles:
+          - $values/infra/mysql-tools/values.yaml
+    - repoURL: https://github.com/Murtadah-1984/k8sgitops.git
+      targetRevision: main
+      ref: values
+  destination:
+    namespace: mysql-tools
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+

@@ -1,0 +1,5 @@
+# MySQL Operator Helm Values
+# Operator only - manages MySQL InnoDBCluster resources
+
+# Add operator-specific configuration here
+

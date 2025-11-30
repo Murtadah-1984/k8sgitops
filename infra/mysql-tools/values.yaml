@@ -1,0 +1,14 @@
+# MySQL Tools Helm Values
+# phpMyAdmin, exporters, backup-job UI
+
+# phpMyAdmin configuration
+phpmyadmin:
+  enabled: true
+  # Add phpMyAdmin configuration here
+
+# MySQL exporters
+# Add exporter configurations here
+
+# Backup job UI
+# Add backup job UI configuration here
+

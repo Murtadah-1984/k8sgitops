@@ -1,0 +1,18 @@
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mysql-prod
+  namespace: mysql-prod
+spec:
+  # Add InnoDBCluster configuration here
+  # - instances: 3
+  # - router:
+  #     instances: 2
+  # - secretName: mysql-prod-secret
+  # - datadirVolumeClaimTemplate:
+  #     accessModes: ["ReadWriteOnce"]
+  #     storageClassName: rook-ceph-block
+  #     resources:
+  #       requests:
+  #         storage: 100Gi
+
