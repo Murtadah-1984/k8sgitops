@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  namespace: kong
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+      - name: cloudflared
+        image: cloudflare/cloudflared:latest
+        args: ["tunnel", "run"]
+        env:
+        - name: TUNNEL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflared-tunnel-secret
+              key: TUNNEL_TOKEN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudflared
+  namespace: kong
+spec:
+  selector:
+    app: cloudflared
+  ports:
+  - port: 80
+    targetPort: 80
