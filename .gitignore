@@ -34,6 +34,11 @@ Thumbs.db
 !clusters/**/vault*.yaml
 !infra/vault/
 !infra/vault/**
+!clusters/**/apps/
+!clusters/**/apps/**
+!clusters/**/*.yaml
+!infra/**/
+!infra/**/*.yaml
 
 # Explicitly ignore calico.yaml
 /clusters/prod/infra/calico.yaml
