@@ -26,10 +26,11 @@ Thumbs.db
 # Ignore everything except tracked directories
 *
 !.gitignore
-!clusters/prod/argocd-root.yaml
-!clusters/**/
+!clusters
+!clusters/
 !clusters/**
-!infra/**/
+!infra
+!infra/
 !infra/**
 
 # Explicitly ignore calico.yaml

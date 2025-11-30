@@ -1,18 +1,25 @@
-apiVersion: mysql.oracle.com/v2
-kind: InnoDBCluster
-metadata:
-  name: mysql-prod
-  namespace: mysql-prod
-spec:
-  # Add InnoDBCluster configuration here
-  # - instances: 3
-  # - router:
-  #     instances: 2
-  # - secretName: mysql-prod-secret
-  # - datadirVolumeClaimTemplate:
-  #     accessModes: ["ReadWriteOnce"]
-  #     storageClassName: rook-ceph-block
-  #     resources:
-  #       requests:
-  #         storage: 100Gi
+clusterName: prod-db
+secretName: prod-db-secret
+serverInstances: 3
+routerInstances: 1
+version: 8.0.34
+datadirVolumeClaimTemplate:
+  accessModes: ReadWriteOnce
+  storageClassName: rook-ceph-block
+  resources:
+    requests:
+      storage: 40Gi
 
+tls:
+  useSelfSigned: true   # ← automatic TLS — no more missing secrets
+
+credentials:
+  root:
+    user: root
+    password:
+      existingSecret: prod-db-secret
+    host: "%"
+
+mycnf: |
+  [mysqld]
+  max_connections=300

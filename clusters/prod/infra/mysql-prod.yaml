@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: infra/mysql-prod
   destination:
-    namespace: mysql-prod
+    namespace: mysql-databases
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:
